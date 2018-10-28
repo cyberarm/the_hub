@@ -11,14 +11,16 @@ class WebServerMonitor < Monitor
     begin
       return Halite.follow.timeout(connect: 3.0, read: 5.0).head(domain)
     rescue Halite::Exception::ConnectionError
-      @up = false
       @last_error = "ConnectionError"
+      return nil
+    rescue Halite::Exception::TimeoutError
+      @last_error = "ConnectionTimedOut"
       return nil
     end
   end
 
   def check
-    @has_run    = true
+    @has_run   = true
     connection = check_connection
     @last_checked_time = Time.monotonic
 
@@ -29,11 +31,15 @@ class WebServerMonitor < Monitor
         return true
       else
         @last_error = connection.status_code.to_s
+        @downtime = Time.monotonic if @up
         @up = false
         return false
       end
+
     else
+      @downtime = Time.monotonic if @up
       @up = false
+      return false
     end
   end
 end

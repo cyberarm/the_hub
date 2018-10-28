@@ -1,0 +1,28 @@
+[
+  {
+    "name": "My Computer",
+    "type": "system"
+  },
+
+  {
+    "name": "example.org",
+    "type": "web",
+    "update_interval": 60.0,
+    "domain": "https://example.org"
+  },
+
+  {
+    "name": "Minetest",
+    "type": "gameserver",
+    "update_interval": 1.0,
+    "domain": "minetest.example.org",
+    "game": "minetest"
+  },
+
+  {
+    "name": "Livingroom Temperature and Humidity Sensor",
+    "type": "sensor",
+    "update_interval": 2.0,
+    "key": "0x01"
+  }
+]

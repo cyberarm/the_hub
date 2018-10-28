@@ -11,15 +11,15 @@ html
           a href="/" Overview
       .nav_button
         p
-          a href="/" System
+          a href="/system" System
       .nav_button
         p
-          a href="/" Web Servers
+          a href="/web-servers" Web Servers
       .nav_button
         p
-          a href="/" Game Servers
+          a href="/game-servers" Game Servers
       .nav_button
         p
-          a href="/" Sensors/IoT
+          a href="/sensors" Sensors/IoT
     .container
       == content
