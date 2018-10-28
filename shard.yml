@@ -1,0 +1,23 @@
+name: the_hub
+version: 0.1.0
+
+authors:
+  - Cyberarm <matthewlikesrobots@gmail.com>
+
+targets:
+  the_hub:
+    main: src/the_hub.cr
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+  sass:
+    github: straight-shoota/sass.cr
+  slang:
+    github: jeromegn/slang
+  hardware:
+    github: crystal-community/hardware
+
+crystal: 0.26.1
+
+license: MIT

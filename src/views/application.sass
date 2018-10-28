@@ -1,0 +1,86 @@
+html, body
+  padding: 0
+  margin: 0
+
+body
+  background: #222
+  color: white
+  text-shadow: 0 0 1px black
+  font-family: Courier New, Courier, monospace
+
+.app_title
+  text-align: center
+  margin: 0
+  padding: 0
+  font-size: 5em
+
+.title
+  text-align: center
+
+.header
+  display: flex
+  justify-content: center
+  flex-flow: row wrap
+  align-items: center
+
+  .nav_button
+    margin: 4pt
+
+    a
+      border-radius: 1pt
+      background: #333
+      padding: 10pt
+      color: white
+      text-decoration: none
+      &:hover
+        color: tomato
+      &:active
+        color: orange
+
+  .selected
+    background: #555
+
+.container
+  margin: 10pt
+  padding: 10pt
+  background: lighten(black, 25%)//tomato
+  border-radius: 1pt
+
+  .monitors
+    display: flex
+    justify-content: center
+    flex-flow: row wrap
+  .monitor
+    margin: 4pt
+    padding: 4pt 4pt 0 4pt
+    width: 20%
+    min-width: 250pt
+    color: black
+    border: solid black 1pt
+    border-radius: 1pt
+    background: #fef
+  .monitor_content
+  .monitor_label
+    text-align: center
+
+  .overview
+    background: #fef
+    padding: 4pt
+    margin: 4pt
+    h2
+      text-align: center
+      color: black
+
+ul
+  list-style: none
+  padding: 0
+  margin: 0
+
+.up
+  padding: 4pt
+  margin: 2pt
+  background: #080
+.down
+  padding: 4pt
+  margin: 2pt
+  background: darkred

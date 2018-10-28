@@ -1,0 +1,30 @@
+version: 1.0
+shards:
+  exception_page:
+    github: crystal-loot/exception_page
+    version: 0.1.1
+
+  hardware:
+    github: crystal-community/hardware
+    version: 0.4.0
+
+  kemal:
+    github: kemalcr/kemal
+    version: 0.24.0
+
+  kilt:
+    github: jeromegn/kilt
+    version: 0.4.0
+
+  radix:
+    github: luislavena/radix
+    version: 0.3.8
+
+  sass:
+    github: straight-shoota/sass.cr
+    version: 0.4.0
+
+  slang:
+    github: jeromegn/slang
+    version: 1.7.1
+
