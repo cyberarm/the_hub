@@ -1,30 +1,58 @@
 require "kemal"
 
-get "/" do
+get "/" do |env|
   monitors = Monitoring.instance
-  render "./src/views/home/index.slang", "./src/views/application.slang"
+  if is_xhr?(env)
+    render "./src/views/home/index.slang"
+  else
+    render "./src/views/home/index.slang", "./src/views/application.slang"
+  end
 end
 
-get "/system" do
+get "/system" do |env|
   monitors = Monitoring.instance.system_monitors
-  render "./src/views/home/system.slang", "./src/views/application.slang"
+  if is_xhr?(env)
+    render "./src/views/home/system.slang"
+  else
+    render "./src/views/home/system.slang", "./src/views/application.slang"
+  end
 end
 
-get "/web-servers" do
+get "/web-servers" do |env|
   monitors = Monitoring.instance.web_server_monitors
-  render "./src/views/home/web_servers.slang", "./src/views/application.slang"
+  if is_xhr?(env)
+    render "./src/views/home/web_servers.slang"
+  else
+    render "./src/views/home/web_servers.slang", "./src/views/application.slang"
+  end
 end
 
-get "/game-servers" do
+get "/game-servers" do |env|
   monitors = Monitoring.instance.game_server_monitors
-  render "./src/views/home/game_servers.slang", "./src/views/application.slang"
+  if is_xhr?(env)
+    render "./src/views/home/game_servers.slang"
+  else
+    render "./src/views/home/game_servers.slang", "./src/views/application.slang"
+  end
 end
 
-get "/sensors" do
+get "/sensors" do |env|
   monitors = Monitoring.instance.sensor_iot_monitors
-  render "./src/views/home/sensors.slang", "./src/views/application.slang"
+  if is_xhr?(env)
+    render "./src/views/home/sensors.slang"
+  else
+    render "./src/views/home/sensors.slang", "./src/views/application.slang"
+  end
 end
 
 get "/css/application.css" do
   Sass.compile_file "./src/views/application.sass"
+end
+
+def is_xhr?(env)
+  begin
+    return true if env.request.headers["X-XHR"] == "xmlhttprequest"
+  rescue KeyError
+    return false
+  end
 end

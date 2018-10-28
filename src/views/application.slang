@@ -2,7 +2,8 @@ html
   head
     title The Hub
     link rel="stylesheet" href="/css/application.css"
-    link
+    script src="/js/application.js"
+
   body
     h1.app_title The Hub
     .header
