@@ -1,0 +1,2 @@
+class SensorIoTMonitor < Monitor
+end

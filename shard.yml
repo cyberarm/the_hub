@@ -17,6 +17,8 @@ dependencies:
     github: jeromegn/slang
   hardware:
     github: crystal-community/hardware
+  halite:
+    github: icyleaf/halite
 
 crystal: 0.26.1
 

@@ -32,21 +32,46 @@ h1.title Overview
   .overview
     h2 Web Servers
     .list
+      - has_web_monitor = false
       ul
-        li.up example.com
-        li.down example.org
-        li.up example.net
+        - if monitors != nil
+          - monitors.each do |monitor|
+            - next unless monitor.is_a?(WebServerMonitor)
+            - has_web_monitor = true
+            - if monitor.up
+              li.up #{monitor.name}
+            - else
+              li.down #{monitor.name}
+      - unless has_web_monitor
+        p No Monitors
 
   .overview
     h2 Game Servers
     .list
+      - has_game_monitor = false
       ul
-        li.up Minetest
-        li.up Minecraft
-        li.down Command & Conquer: Renegade
+        - if monitors != nil
+          - monitors.each do |monitor|
+            - next unless monitor.is_a?(GameServerMonitor)
+            - has_game_monitor = true
+            - if monitor.up
+              li.up #{monitor.name}
+            - else
+              li.down #{monitor.name}
+      - unless has_game_monitor
+        p No Monitors
 
   .overview
     h2 Sensors/IoT
     .list
       ul
-        li.up Livingroom Temperature and Humidity Sensor
+        - if monitors != nil
+          - monitors.each do |monitor|
+            - next unless monitor.is_a?(SensorIoTMonitor)
+            - has_game_monitor = true
+            - if monitor.up
+              li.up #{monitor.name}
+            - else
+              li.down #{monitor.name}
+      - unless has_game_monitor
+        p No Monitors

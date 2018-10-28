@@ -4,6 +4,7 @@ get "/" do
   cpu    = Hardware::CPU.new
   memory = Hardware::Memory.new
   # net    = Hardware::Net.new
+  monitors = Monitoring.instance.monitors
   render "./src/views/home/index.slang", "./src/views/application.slang"
 end
 

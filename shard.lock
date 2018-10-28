@@ -4,6 +4,10 @@ shards:
     github: crystal-loot/exception_page
     version: 0.1.1
 
+  halite:
+    github: icyleaf/halite
+    version: 0.7.3
+
   hardware:
     github: crystal-community/hardware
     version: 0.4.0
