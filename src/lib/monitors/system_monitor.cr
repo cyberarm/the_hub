@@ -5,8 +5,8 @@ class SystemMonitor < Monitor
   @net_old_out : Int64
   @net_now_in  : Int64
   @net_now_out : Int64
-  @net_download: Float64
-  @net_upload  : Float64
+  @net_download: Int64
+  @net_upload  : Int64
   def initialize(name : String)
     super(name, 1)
       @cpu    = Hardware::CPU.new
@@ -25,11 +25,60 @@ class SystemMonitor < Monitor
     @net = Hardware::Net.new
     @net_now_in, @net_now_out = @net.in_octets, @net.out_octets
 
-    @net_download = ((@net_now_in - @net_old_in) / 1000.0).round(2) #kB/s
-    @net_upload   = ((@net_now_out - @net_old_out) / 1000.0).round(2) #kB/s
+    @net_download = (@net_now_in - @net_old_in) * 8 # Bytes to bits
+    @net_upload   = (@net_now_out - @net_old_out) * 8
 
     @net_old_in, @net_old_out = @net_now_in, @net_now_out
 
     @up = true
+  end
+
+  def formatted_net_download
+    if @net_download >= (1000*1000*1000) # Gb
+      n = (@net_download / 1000.0 / 1000.0 / 1000.0).round(2)
+      return "#{n} Gb/s"
+    elsif @net_download >= (1000*1000) # Mb
+      n = (@net_download / 1000.0 / 1000.0).round(2)
+      return "#{n} Mb/s"
+    elsif @net_download >= (1000) # Kb
+      n = (@net_download / 1000.0).round(2)
+      return "#{n} Kb/s"
+    else
+      return "#{@net_download} b/s"
+    end
+  end
+
+  def formatted_net_upload
+    if @net_upload >= (1000*1000*1000) # Gb
+      n = (@net_upload / 1000.0 / 1000.0 / 1000.0).round(2)
+      return "#{n} Gb/s"
+    elsif @net_upload >= (1000*1000) # Mb
+      n = (@net_upload / 1000.0 / 1000.0).round(2)
+      return "#{n} Mb/s"
+    elsif @net_upload >= (1000) # kb
+      n = (@net_upload / 1000.0).round(2)
+      return "#{n} Kb/s"
+    else
+      return "#{@net_upload} b/s"
+    end
+  end
+
+  def to_json
+    {
+      name: @name,
+      up: @up,
+      uptime: uptime.to_f,
+      downtime: downtime.to_f,
+      last_error: @last_error,
+      last_checked_time: @last_checked_time.to_f,
+
+      cpu: @cpu.usage.to_i,
+      memory: @memory.percent.to_i,
+      memory_available: @memory.available,
+      memory_used: @memory.used,
+      memory_total: @memory.total,
+      net_download: @net_download,
+      net_upload: @net_upload
+    }.to_json
   end
 end

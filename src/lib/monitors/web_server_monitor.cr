@@ -9,7 +9,7 @@ class WebServerMonitor < Monitor
 
   def check_connection
     begin
-      return Halite.follow.timeout(connect: 3.0, read: 5.0).head(domain)
+      return Halite.follow.timeout(connect: 10.0, read: 15.0).head(domain)
     rescue Halite::Exception::ConnectionError
       @last_error = "ConnectionError"
       return nil

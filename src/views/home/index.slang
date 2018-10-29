@@ -9,8 +9,8 @@ h1.title Overview
           p CPU: #{monitor.cpu.usage.to_i}%
           p RAM: #{monitor.memory.percent.round}%
           p #{(monitor.memory.used/1000.0/1000.0).round(1)}GiB / #{(monitor.memory.total/1000.0/1000.0).round(1)}GiB
-          p DOWN: #{monitor.net_download.round} kB/s
-          p UP: #{monitor.net_upload.round} kB/s
+          p DOWN: #{monitor.formatted_net_download}
+          p UP: #{monitor.formatted_net_upload}
         - else
           p.down #{monitor.name}
     - unless monitors.system_monitors.size > 0

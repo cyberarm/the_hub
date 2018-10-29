@@ -22,17 +22,11 @@ h1.title System
         p Network Download Monitor
       .monitor_content
         data data-monitor="network_download" data-type="network"
-        - if monitor.net_download > 1000
-          h1 #{(monitor.net_download / 1000).round(2)}MB/s
-        - else
-          h1 #{monitor.net_download}kB/s
+          h1 #{monitor.formatted_net_download}
 
     .monitor
       .monitor_label
         p Network Upload Monitor
       .monitor_content
         data data-monitor="network_upload" data-type="network"
-        - if monitor.net_upload > 1000
-          h1 #{(monitor.net_upload / 1000).round(2)}MB/s
-        - else
-          h1 #{monitor.net_upload}kB/s
+          h1 #{monitor.formatted_net_upload}

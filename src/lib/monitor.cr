@@ -37,8 +37,9 @@ class Monitor
     "#{downtime.days}d #{downtime.hours}h #{downtime.minutes}m #{downtime.seconds}s"
   end
 
+  # Hash -> JSON expected
   def to_json
-    JSON.dump({name: @name, up: @up, uptime: uptime, downtime: downtime, last_error: @last_error, last_checked_time: @last_checked_time})
+    {name: @name, up: @up, uptime: uptime.to_f, downtime: downtime.to_f, last_error: @last_error, last_checked_time: @last_checked_time.to_f}.to_json
   end
 end
 

@@ -29,6 +29,9 @@ class Application {
     self.xmlHttpRequest.open("GET", window.location.href);
     self.xmlHttpRequest.setRequestHeader("X-XHR", "xmlhttprequest");
 
+    self.xmlHttpRequest.onerror = function(error) {
+      self.xmlHttpRequest = null; // Failed, allow update() to retry
+    }
     self.xmlHttpRequest.onload = function() {
       document.getElementsByClassName("container")[0].innerHTML = self.xmlHttpRequest.response;
     }
