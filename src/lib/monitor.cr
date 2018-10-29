@@ -25,8 +25,20 @@ class Monitor
     Time.monotonic - @uptime
   end
 
+  def formatted_uptime
+    "#{uptime.days}d #{uptime.hours}h #{uptime.minutes}m #{uptime.seconds}s"
+  end
+
   def downtime
     Time.monotonic - @downtime
+  end
+
+  def formatted_downtime
+    "#{downtime.days}d #{downtime.hours}h #{downtime.minutes}m #{downtime.seconds}s"
+  end
+
+  def to_json
+    JSON.dump({name: @name, up: @up, uptime: uptime, downtime: downtime, last_error: @last_error, last_checked_time: @last_checked_time})
   end
 end
 

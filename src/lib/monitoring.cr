@@ -3,10 +3,10 @@ class Monitoring
     JSON.mapping(
       name: String,
       type: String,
-      update_interval: Float32 | Nil,
-      domain: String | Nil,
-      game: String | Nil,
-      key: String | Nil
+      update_interval: Float32?,
+      domain: String?,
+      game: String?,
+      key: String?
     )
   end
 
@@ -48,9 +48,20 @@ class Monitoring
         @monitors.push(m)
         @web_server_monitors.push(m)
       when "gameserver"
-        m = GameServerMonitor.new(monitor.name, monitor.update_interval.not_nil!)
-        @monitors.push(m)
-        @game_server_monitors.push(m)
+        case monitor.game
+        when "minecraft"
+          m = MinecraftMonitor.new(monitor.name, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+          @monitors.push(m)
+          @game_server_monitors.push(m)
+        when "minetest"
+          m = MinetestMonitor.new(monitor.name, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+          @monitors.push(m)
+          @game_server_monitors.push(m)
+        when "cncrenegade"
+          m = CNCRenegadeMonitor.new(monitor.name, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+          @monitors.push(m)
+          @game_server_monitors.push(m)
+        end
       when "sensor"
         m = SensorIoTMonitor.new(monitor.name, monitor.update_interval.not_nil!)
         @monitors.push(m)
@@ -60,18 +71,20 @@ class Monitoring
   end
 
   def run
-    spawn do
-      while @check_monitors
-        @monitors.each do |monitor|
+    @monitors.each do |monitor|
+      spawn do
+        while @check_monitors
           if monitor.has_run
             if ((Time.monotonic - monitor.last_checked_time).to_i < monitor.update_interval)
-              next
+            else
+              monitor.check
             end
+          else
+            monitor.check
           end
 
-          monitor.check
+          sleep 0.1
         end
-        sleep 0.1
       end
     end
   end

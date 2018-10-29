@@ -20,6 +20,9 @@ dependencies:
   halite:
     github: icyleaf/halite
 
+  mcping:
+    github: Syfaro/mcping
+
 crystal: 0.26.1
 
 license: MIT

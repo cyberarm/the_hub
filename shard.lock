@@ -20,6 +20,10 @@ shards:
     github: jeromegn/kilt
     version: 0.4.0
 
+  mcping:
+    github: Syfaro/mcping
+    commit: 884557d65037bb5451e31ebcd7131da4e6e45367
+
   radix:
     github: luislavena/radix
     version: 0.3.8
@@ -31,4 +35,8 @@ shards:
   slang:
     github: jeromegn/slang
     version: 1.7.1
+
+  uvarint:
+    github: freitagbr/crystal-uvarint
+    commit: 13e81a95127d049e33b3ada6b7383f9e99909275
 

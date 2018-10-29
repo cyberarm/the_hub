@@ -9,8 +9,8 @@ h1.title Web Servers
           h1.down #{monitor.name}
       .monitor_content
         - if monitor.up
-          p Uptime #{monitor.uptime.days}d #{monitor.uptime.hours}h #{monitor.uptime.minutes}m #{monitor.uptime.seconds}s
+          p Uptime #{monitor.formatted_uptime}
         - else
-          p Downtime #{monitor.downtime.days}d #{monitor.downtime.hours}h #{monitor.downtime.minutes}m #{monitor.downtime.seconds}s
+          p Downtime #{monitor.formatted_downtime}
           p Last error #{monitor.last_error}
 
