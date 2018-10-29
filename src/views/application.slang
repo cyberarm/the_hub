@@ -12,7 +12,7 @@ html
           a href="/" Overview
       .nav_button
         p
-          a href="/system" System
+          a href="/systems" Systems
       .nav_button
         p
           a href="/web-servers" Web Servers

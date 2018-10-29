@@ -9,12 +9,12 @@ get "/" do |env|
   end
 end
 
-get "/system" do |env|
+get "/systems" do |env|
   monitors = Monitoring.instance.system_monitors
   if is_xhr?(env)
-    render "./src/views/home/system.slang"
+    render "./src/views/home/systems.slang"
   else
-    render "./src/views/home/system.slang", "./src/views/application.slang"
+    render "./src/views/home/systems.slang", "./src/views/application.slang"
   end
 end
 

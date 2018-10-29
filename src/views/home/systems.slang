@@ -1,4 +1,4 @@
-h1.title System
+h1.title Systems
 - monitors.each do |monitor|
   h2.title #{monitor.name}
   .monitors

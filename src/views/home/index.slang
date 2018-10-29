@@ -1,7 +1,7 @@
 h1.title Overview
 .monitors
   .overview
-    h2 System
+    h2 Systems
     .list
       - monitors.system_monitors.each do |monitor|
         - if monitor.up
