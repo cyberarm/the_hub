@@ -13,6 +13,7 @@ class CNCRenegadeMonitor < GameServerMonitor
 
   def retrieve_data(request = "status")
     puts "request: #{request}"
+    @packets.clear
 
     start_time = Time.monotonic
     begin
@@ -78,7 +79,6 @@ class CNCRenegadeMonitor < GameServerMonitor
     end
   end
 
-  # TODO: Write me
   def parse(packets : Array(String))
     parsed_hashes = {} of String => String
     packets.each do |packet|
