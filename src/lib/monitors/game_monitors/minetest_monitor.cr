@@ -17,18 +17,24 @@ class MinetestMonitor < GameServerMonitor
   def received_response
     # Minetest Protocol 37~
     hello_packet = Slice[0x4f_u8, 0x45_u8, 0x74_u8, 0x03_u8, 0x00_u8, 0x00_u8, 0x00_u8, 0x03_u8, 0xff_u8, 0xdc_u8, 0x01_u8, 0x00_u8, 0x00_u8]
-    # hi_again_packet = Slice[0x02_u8]
 
     @socket.write(hello_packet)
-    # @socket.write(hi_again_packet)
 
-    slice = Bytes.new(14)
     begin
+      slice = Bytes.new(16)
+      responses = 0
       @socket.read(slice)
+      loop do
+        @socket.read(slice)
+        responses+=1
+        break if responses >= 8
+      end
       return true
     rescue IO::Timeout
       return false
     end
+
+    return false
   end
 
   def check

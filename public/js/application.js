@@ -7,7 +7,6 @@ class Application {
   run(app) {
     self = app;
     setInterval(self.update, 1000);
-    self.xhr();
   }
 
   /*
@@ -18,9 +17,13 @@ class Application {
   }
 
   update() {
-    if (self.xhr_ready()) {
+    if (!self.admin_page() && self.xhr_ready()) {
       self.xhr();
     }
+  }
+
+  admin_page() {
+    return window.location.href.includes("admin");
   }
 
   xhr() {
@@ -48,5 +51,8 @@ class Application {
   }
 }
 
-app = new Application();
-app.run(app);
+window.onload = function() {
+  console.log("Window Loaded")
+  app = new Application();
+  app.run(app);
+}

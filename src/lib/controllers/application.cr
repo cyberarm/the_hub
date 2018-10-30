@@ -1,4 +1,10 @@
-require "kemal"
+before_all do |env|
+  if authenticated?(env) || env.request.path.includes?("/admin/sign-in") || env.request.path.includes?("/css/application.css")
+    next
+  else
+    env.redirect "/admin/sign-in"
+  end
+end
 
 get "/" do |env|
   monitors = Monitoring.instance
@@ -53,6 +59,16 @@ def is_xhr?(env)
   begin
     return true if env.request.headers["X-XHR"] == "xmlhttprequest"
   rescue KeyError
+    return false
+  end
+end
+
+def authenticated?(env)
+  if env.request.cookies["authentication_token"]? && env.request.cookies["authentication_token"].value == "yes"
+    puts "Authenticated!"
+    return true
+  else
+    puts "Not Authenticated!"
     return false
   end
 end
