@@ -51,7 +51,7 @@ get "/sensors" do |env|
   end
 end
 
-get "/css/application.css" do
+get "/css/application.css" do |env|
   Sass.compile_file "./src/views/application.sass"
 end
 
@@ -64,11 +64,9 @@ def is_xhr?(env)
 end
 
 def authenticated?(env)
-  if env.request.cookies["authentication_token"]? && env.request.cookies["authentication_token"].value == "yes"
-    puts "Authenticated!"
+  if env.request.cookies["authentication_token"]? && Session.instance.valid_session?(env.request.cookies["authentication_token"].value)
     return true
   else
-    puts "Not Authenticated!"
     return false
   end
 end

@@ -36,12 +36,24 @@ body
       color: white
       text-decoration: none
       &:hover
+        background: lighten(#333, 3%)
         color: tomato
       &:active
+        background: darken(#333, 5%)
         color: orange
 
   .selected
     background: #555
+
+  .admin
+    a
+      background: darkred
+      &:hover
+        background: lighten(darkred, 3%)
+        color: black
+      &:active
+        background: darken(darkred, 5%)
+        color: grey
 
 .container
   margin: 10pt

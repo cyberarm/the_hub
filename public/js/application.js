@@ -1,6 +1,6 @@
 class Application {
   constructor() {
-    this.self = this; // This feels REALLY weird
+    this.self = this; // This feels REALLY weird, and kinda familiar
     self.xmlHttpRequest = null;
   }
 
@@ -23,7 +23,7 @@ class Application {
   }
 
   admin_page() {
-    return window.location.href.includes("admin");
+    return window.location.href.includes("/admin");
   }
 
   xhr() {
@@ -36,7 +36,12 @@ class Application {
       self.xmlHttpRequest = null; // Failed, allow update() to retry
     }
     self.xmlHttpRequest.onload = function() {
-      document.getElementsByClassName("container")[0].innerHTML = self.xmlHttpRequest.response;
+      if (self.xmlHttpRequest.responseURL === window.location.href) {
+        document.getElementsByClassName("container")[0].innerHTML = self.xmlHttpRequest.response;
+      } else {
+        console.log("Server redirected request to '"+ self.xmlHttpRequest.responseURL +"' from '"+ window.location.href +"'");
+        window.location = self.xmlHttpRequest.responseURL;
+      }
     }
 
     self.xmlHttpRequest.send();

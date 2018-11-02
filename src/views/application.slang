@@ -22,5 +22,16 @@ html
       .nav_button
         p
           a href="/sensors" Sensors/IoT
+      - if authenticated?(env)
+        .nav_button class="admin"
+          p
+            a href="/admin" Admin
+        .nav_button class="admin"
+          p
+            a href="/admin/sign-out" Sign Out
+      - else
+        .nav_button class="admin"
+          p
+            a href="/admin/sign-in" Sign In
     .container
       == content

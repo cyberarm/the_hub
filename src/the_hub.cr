@@ -13,6 +13,7 @@ module Hub
 end
 
 require "./lib/config/*"
+require "./lib/admin/*"
 
 require "./lib/*"
 
