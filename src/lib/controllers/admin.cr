@@ -1,9 +1,19 @@
 get "/admin" do |env|
-  "String -> Number"
+  render "./src/views/admin/index.slang", "./src/views/admin/admin_layout.slang"
+end
+
+get "/admin/monitors" do |env|
+  monitoring = Monitoring.instance
+  render "./src/views/admin/monitors/index.slang", "./src/views/admin/admin_layout.slang"
+end
+
+get "/admin/monitors/:monitor" do |env|
+  monitor = Monitoring.instance.monitors[env.params.url["monitor"].to_i]
+  render "./src/views/admin/monitors/show.slang", "./src/views/admin/admin_layout.slang"
 end
 
 get "/admin/sign-in" do |env|
-  render "./src/views/admin/sign_in.slang", "./src/views/application.slang"
+  render "./src/views/admin/sign_in.slang", "./src/views/admin/admin_layout.slang"
 end
 
 post "/admin/sign-in" do |env|

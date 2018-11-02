@@ -13,7 +13,7 @@ class CNCRenegadeMonitor < GameServerMonitor
 
   def retrieve_data(request = "status")
     puts "request: #{request}"
-    @packets.clear
+    @packets.clear 
 
     start_time = Time.monotonic
     begin
