@@ -12,7 +12,9 @@ post "/admin/sign-in" do |env|
 
   if username.downcase == FriendlyConfig.config.not_nil!.admin["username"].downcase
     if check_password(FriendlyConfig.config.not_nil!.admin["password"], password_from_form)
-      env.response.cookies["authentication_token"] = Session.instance.create_session
+      cookie = HTTP::Cookie.new("authentication_token", Session.instance.create_session)
+      cookie.http_only = true
+      env.response.cookies["authentication_token"] = cookie
       env.redirect "/"
     else
       env.redirect "/admin/sign-in"
