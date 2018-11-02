@@ -1,12 +1,15 @@
 html
   head
-    title The Hub
+    title #{page_title} | The Hub
     link rel="stylesheet" href="/css/application.css"
 
   body
     h1.app_title class="admin" The Hub
     .header
       - if authenticated?(env)
+        .nav_button class="admin"
+          p
+            a href="/admin/" Admin
         .nav_button class="admin"
           p
             a href="/admin/monitors" Monitors

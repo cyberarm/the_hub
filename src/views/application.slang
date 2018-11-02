@@ -1,6 +1,6 @@
 html
   head
-    title The Hub
+    title #{page_title} | The Hub
     link rel="stylesheet" href="/css/application.css"
     script src="/js/application.js"
 

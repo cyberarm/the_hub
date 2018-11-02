@@ -7,6 +7,7 @@ before_all do |env|
 end
 
 get "/" do |env|
+  page_title = "Overview"
   monitors = Monitoring.instance
   if is_xhr?(env)
     render "./src/views/home/index.slang"
@@ -16,6 +17,7 @@ get "/" do |env|
 end
 
 get "/systems" do |env|
+  page_title = "Systems"
   monitors = Monitoring.instance.system_monitors
   if is_xhr?(env)
     render "./src/views/home/systems.slang"
@@ -25,6 +27,7 @@ get "/systems" do |env|
 end
 
 get "/web-servers" do |env|
+  page_title = "Web Servers"
   monitors = Monitoring.instance.web_server_monitors
   if is_xhr?(env)
     render "./src/views/home/web_servers.slang"
@@ -34,6 +37,7 @@ get "/web-servers" do |env|
 end
 
 get "/game-servers" do |env|
+  page_title = "Game Servers"
   monitors = Monitoring.instance.game_server_monitors
   if is_xhr?(env)
     render "./src/views/home/game_servers.slang"
@@ -43,6 +47,7 @@ get "/game-servers" do |env|
 end
 
 get "/sensors" do |env|
+  page_title = "Sensors"
   monitors = Monitoring.instance.sensor_iot_monitors
   if is_xhr?(env)
     render "./src/views/home/sensors.slang"
