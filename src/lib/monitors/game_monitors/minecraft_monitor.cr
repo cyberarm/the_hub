@@ -1,7 +1,7 @@
 class MinecraftMonitor < GameServerMonitor
 
-  @pinger : MCPing::Ping
-  @ping : MCPing::Ping::PingResponse?
+  @mc_pinger : MCPing::Ping
+  @mc_ping : MCPing::Ping::PingResponse?
 
   getter :ping
   def initialize(name : String, update_interval : Float32, domain : String)
@@ -11,16 +11,16 @@ class MinecraftMonitor < GameServerMonitor
     if split.size > 1
       host = split.first
       port = split.last.to_u32
-      @pinger = MCPing::Ping.new(host, port)
+      @mc_pinger = MCPing::Ping.new(host, port)
     else
-      @pinger = MCPing::Ping.new(@domain)
+      @mc_pinger = MCPing::Ping.new(@domain)
     end
-    @ping = nil
+    @mc_ping = nil
   end
 
   def query
     begin
-      @ping = @pinger.ping
+      @mc_ping = @mc_pinger.ping
       return true
     rescue ex
       return false
@@ -43,14 +43,22 @@ class MinecraftMonitor < GameServerMonitor
   end
 
   def report
-    if @ping
+    if @mc_ping
       if @up
-        return "<img src='#{@ping.not_nil!.favicon}'></img><br/>Uptime #{formatted_uptime}<br/>#{@ping.not_nil!.description.text}<br/>Players #{@ping.not_nil!.players.online}/#{@ping.not_nil!.players.max}"
+        return "<img src='#{@mc_ping.not_nil!.favicon}'></img><br/>Uptime #{formatted_uptime}<br/>#{@mc_ping.not_nil!.description.text}<br/>Players #{@mc_ping.not_nil!.players.online}/#{@mc_ping.not_nil!.players.max}"
       else
         return "Downtime #{formatted_downtime}"
       end
     else
       return "N/A"
+    end
+  end
+
+  def mini_status
+    if @mc_ping && @up
+      "#{@mc_ping.not_nil!.players.online}/#{@mc_ping.not_nil!.players.max}"
+    else
+      ""
     end
   end
 end

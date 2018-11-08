@@ -13,7 +13,7 @@ class CNCRenegadeMonitor < GameServerMonitor
 
   def retrieve_data(request = "status")
     puts "request: #{request}"
-    @packets.clear 
+    @packets.clear
 
     start_time = Time.monotonic
     begin
@@ -66,6 +66,12 @@ class CNCRenegadeMonitor < GameServerMonitor
       end
     else
       "Downtime #{formatted_downtime}"
+    end
+  end
+
+  def mini_status
+    if @up && @data
+      "#{@data["numplayers"]}/#{@data["maxplayers"]}"
     end
   end
 

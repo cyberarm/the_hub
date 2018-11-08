@@ -8,8 +8,12 @@ class WebServerMonitor < Monitor
   end
 
   def check_connection
+    start_time = Time.monotonic
+
     begin
-      return Halite.follow.timeout(connect: 10.0, read: 15.0).head(domain)
+      response = Halite.follow.timeout(connect: 10.0, read: 15.0).head(domain)
+      @ping = (Time.monotonic - start_time).total_milliseconds.round(2)
+      return response
     rescue Halite::Exception::ConnectionError
       @last_error = "ConnectionError"
       return nil
@@ -41,5 +45,9 @@ class WebServerMonitor < Monitor
       @up = false
       return false
     end
+  end
+
+  def mini_status
+    "#{@ping}ms"
   end
 end

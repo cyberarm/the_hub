@@ -1,12 +1,13 @@
 class Monitor
   property :name, :up, :uptime, :downtime, :last_error
-  getter :last_checked_time, :update_interval, :has_run
+  getter :last_checked_time, :update_interval, :has_run, :ping
   def initialize(name : String, update_interval : Float32)
     @name = name
     @up = false
     @uptime = Time.monotonic
     @downtime = Time.monotonic
     @last_error = ""
+    @ping = 0.0
 
     @has_run = false
     @last_checked_time = Time.monotonic
@@ -19,6 +20,10 @@ class Monitor
   end
 
   def check
+  end
+
+  def mini_status
+    ""
   end
 
   def uptime
