@@ -35,6 +35,7 @@ class Monitoring
   end
 
   def add_monitors(file : String)
+    return
     monitors = Array(MonitorStruct).from_json(File.open(file))
 
     monitors.each do |monitor|

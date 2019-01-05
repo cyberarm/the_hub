@@ -23,6 +23,11 @@ dependencies:
   mcping:
     github: Syfaro/mcping
 
+  granite:
+    github: amberframework/granite
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+
 crystal: 0.26.1
 
 license: MIT
