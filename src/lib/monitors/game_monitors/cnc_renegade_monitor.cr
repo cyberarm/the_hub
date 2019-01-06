@@ -60,7 +60,11 @@ class CNCRenegadeMonitor < GameServerMonitor
   def report
     if @up
       if @data
-        "Uptime #{formatted_uptime}<br/>Map #{@data["mapname"]}<br/>Players #{@data["numplayers"]}/#{@data["maxplayers"]}<br/>Time Left #{formatted_timeleft}"
+        if @data.dig?("numplayers") && @data.dig?("maxplayers")
+          "Uptime #{formatted_uptime}<br/>Map #{@data["mapname"]}<br/>Players #{@data["numplayers"]}/#{@data["maxplayers"]}<br/>Time Left #{formatted_timeleft}"
+        else
+          "Uptime #{formatted_uptime}<br/>Map #{@data["mapname"]}<br/>Time Left #{formatted_timeleft}"
+        end
       else
         "Uptime #{formatted_uptime}"
       end
@@ -71,7 +75,7 @@ class CNCRenegadeMonitor < GameServerMonitor
 
   def mini_status
     if @up && @data
-      "#{@data["numplayers"]}/#{@data["maxplayers"]}"
+      "#{@data["numplayers"]}/#{@data["maxplayers"]}" if @data.dig?("numplayers") && @data.dig?("maxplayers")
     end
   end
 

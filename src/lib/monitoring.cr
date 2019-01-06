@@ -80,7 +80,7 @@ class Monitoring
     when "web"
       m = WebServerMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
 
-    when "gameserver"
+    when "game"
       case monitor.game.not_nil!
       when "minecraft"
         m = MinecraftMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)

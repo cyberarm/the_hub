@@ -24,8 +24,10 @@ post "/admin/monitors/new" do |env|
   name = env.params.body["name"].as(String)
   type = env.params.body["type"].as(String)
   domain = env.params.body["domain"].as(String)
+  update_interval = env.params.body["update_interval"].to_f
+  game = env.params.body["game"].as(String)
 
-  m = Model::Monitor.create(name: name, type: type, domain: domain)
+  m = Model::Monitor.create(name: name, type: type, domain: domain, update_interval: update_interval, game: game)
   if m
     Monitoring.instance.add_monitor(m)
     env.redirect "/admin/monitors/#{m.id}"
