@@ -3,5 +3,3 @@ h1.title #{monitor.name}
   .monitor
     .monitor_label
     .monitor_content style="text-align: left"
-      - JSON.parse(monitor.to_json).as_h.each do |key, value|
-        p #{key}: #{value}

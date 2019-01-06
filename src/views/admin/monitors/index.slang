@@ -1,4 +1,7 @@
 h1.title All Monitors
+center
+  p
+    a href="/admin/monitors/new" Add Monitor
 .monitors
   - monitoring.monitors.each_with_index do |monitor, i|
     .monitor
@@ -12,7 +15,7 @@ h1.title All Monitors
         p
           a href="/admin/monitors/#{i}" Details
           |/
-          a href="/admin/monitors/#{i}" Edit
+          a href="/admin/monitors/#{i}/edit" Edit
           |/
           span.admin
             a href="/admin/monitors/#{i}/destroy" Delete

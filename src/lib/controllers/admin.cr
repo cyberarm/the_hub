@@ -1,6 +1,7 @@
 get "/admin" do |env|
   page_title = "Admin"
   monitoring = Monitoring.instance
+  accounts   = Model::User.all
   render "./src/views/admin/index.slang", "./src/views/admin/admin_layout.slang"
 end
 
@@ -10,14 +11,43 @@ get "/admin/monitors" do |env|
   render "./src/views/admin/monitors/index.slang", "./src/views/admin/admin_layout.slang"
 end
 
+get "/admin/monitors/new" do |env|
+  page_title = "Add Monitor | Admin"
+  monitoring = Monitoring.instance
+  render "./src/views/admin/monitors/new.slang", "./src/views/admin/admin_layout.slang"
+end
+post "/admin/monitors/new" do |env|
+  name = env.params.body["name"].as(String)
+  type = env.params.body["type"].as(String)
+  domain = env.params.body["domain"].as(String)
+
+  Model::Monitor.create(name: name, type: type, domain: domain)
+end
+
 get "/admin/monitors/:monitor" do |env|
-  monitor = Monitoring.instance.monitors[env.params.url["monitor"].to_i]
-  page_title = "#{monitor.name} | Monitors | Admin"
-  render "./src/views/admin/monitors/show.slang", "./src/views/admin/admin_layout.slang"
+  monitor = Model::Monitor.find(env.params.url["monitor"].to_i)
+
+  if monitor
+    page_title = "#{monitor.not_nil!.name.not_nil!} | Monitors | Admin"
+    render "./src/views/admin/monitors/show.slang", "./src/views/admin/admin_layout.slang"
+  else
+    halt(env, status_code: 404)
+  end
+end
+
+get "/admin/monitors/:monitor/edit" do |env|
+  monitor = Model::Monitor.find(env.params.url["monitor"].to_i)
+  if monitor
+    page_title = "#{monitor.not_nil!.name.not_nil!} | Monitors | Admin"
+    render "./src/views/admin/monitors/edit.slang", "./src/views/admin/admin_layout.slang"
+  else
+    halt(env, status_code: 404)
+  end
 end
 
 get "/admin/accounts" do |env|
   page_title = "Accounts | Admin"
+  accounts = Model::User.all
   render "./src/views/admin/accounts/index.slang", "./src/views/admin/admin_layout.slang"
 end
 
@@ -36,12 +66,11 @@ post "/admin/sign-in" do |env|
   username = env.params.body["username"].as(String)
   password_from_form = env.params.body["password"].as(String)
 
-  if username.downcase == FriendlyConfig.config.not_nil!.admin["username"].downcase
-    if check_password(FriendlyConfig.config.not_nil!.admin["password"], password_from_form)
-      cookie = HTTP::Cookie.new("authentication_token", Session.instance.create_session)
-      cookie.http_only = true
-      env.response.cookies["authentication_token"] = cookie
-      env.redirect "/"
+  user = Model::User.find_by(username: username.downcase)
+
+  if user && username.downcase == user.username.not_nil!
+    if check_password(user.password.not_nil!, password_from_form)
+      Session.instance.create_session(env, user.id.not_nil!, env.request.host.not_nil!)
     else
       cookie = HTTP::Cookie.new("hub_message", "Username or password was incorrect!")
       cookie.http_only = true
@@ -70,7 +99,7 @@ def bcrypt_password(password)
   Crypto::Bcrypt::Password.create(password)
 end
 
-def check_password(password_hash : String, password_from_form : String)
+def check_password(password_hash : String|Nil, password_from_form : String)
   if Crypto::Bcrypt::Password.new(password_hash) == password_from_form
     return true
   else

@@ -1,5 +1,3 @@
-puts "HI"
-
 class Model
   class Monitor < Granite::Base
     adapter sqlite
@@ -8,9 +6,9 @@ class Model
     field type : String
     field domain : String
     field update_interval : Float32
+    field game : String
     field key : String
+
+    timestamps
   end
 end
-
-Model::Monitor.migrator.drop_and_create
-puts "0x00"

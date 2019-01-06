@@ -1,14 +1,14 @@
 class Monitoring
-  class MonitorStruct
-    JSON.mapping(
-      name: String,
-      type: String,
-      update_interval: Float32?,
-      domain: String?,
-      game: String?,
-      key: String?
-    )
-  end
+  # class MonitorStruct
+  #   JSON.mapping(
+  #     name: String,
+  #     type: String,
+  #     update_interval: Float32?,
+  #     domain: String?,
+  #     game: String?,
+  #     key: String?
+  #   )
+  # end
 
   @@singleton = new.as(self)
   def self.instance : Monitoring
@@ -35,38 +35,39 @@ class Monitoring
   end
 
   def add_monitors(file : String)
-    return
-    monitors = Array(MonitorStruct).from_json(File.open(file))
+    monitors = Model::Monitor.all
 
-    monitors.each do |monitor|
-      case monitor.type
-      when "system"
-        m = SystemMonitor.new(monitor.name)
-        @monitors.push(m)
-        @system_monitors.push(m)
-      when "web"
-        m = WebServerMonitor.new(monitor.name, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-        @monitors.push(m)
-        @web_server_monitors.push(m)
-      when "gameserver"
-        case monitor.game
-        when "minecraft"
-          m = MinecraftMonitor.new(monitor.name, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+    if monitors
+      monitors.each do |monitor|
+        case monitor.type
+        when "system"
+          m = SystemMonitor.new(monitor.name.not_nil!)
           @monitors.push(m)
-          @game_server_monitors.push(m)
-        when "minetest"
-          m = MinetestMonitor.new(monitor.name, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+          @system_monitors.push(m)
+        when "web"
+          m = WebServerMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
           @monitors.push(m)
-          @game_server_monitors.push(m)
-        when "cncrenegade"
-          m = CNCRenegadeMonitor.new(monitor.name, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+          @web_server_monitors.push(m)
+        when "gameserver"
+          case monitor.game.not_nil!
+          when "minecraft"
+            m = MinecraftMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+            @monitors.push(m)
+            @game_server_monitors.push(m)
+          when "minetest"
+            m = MinetestMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+            @monitors.push(m)
+            @game_server_monitors.push(m)
+          when "cncrenegade"
+            m = CNCRenegadeMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+            @monitors.push(m)
+            @game_server_monitors.push(m)
+          end
+        when "sensor"
+          m = SensorIoTMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!)
           @monitors.push(m)
-          @game_server_monitors.push(m)
+          @sensor_iot_monitors.push(m)
         end
-      when "sensor"
-        m = SensorIoTMonitor.new(monitor.name, monitor.update_interval.not_nil!)
-        @monitors.push(m)
-        @sensor_iot_monitors.push(m)
       end
     end
   end

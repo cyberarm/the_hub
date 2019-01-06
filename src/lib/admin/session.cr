@@ -11,32 +11,41 @@ class Session
   def valid_session?(cookie : String) : Bool
     valid = false
 
-    @sessions.each do |session|
-      if session == cookie
+    session = Model::Session.find_by(token: cookie)
+    if session && session.token.not_nil!
+      if session.token.not_nil! == cookie
         valid = true
-        break
       end
     end
 
     return valid
   end
 
-  def create_session : String
+  def create_session(env, user_id : Int64, user_ip : String) : Bool
     random = Random.new
     key = random.urlsafe_base64(32)
-    @sessions.push(key)
+    session = Model::Session.create(user_id: user_id, token: key, user_ip: user_ip)
 
-    return key
+    if session && session.token.not_nil!
+      cookie = HTTP::Cookie.new("authentication_token", key)
+      cookie.http_only = true
+      env.response.cookies["authentication_token"] = cookie
+      env.redirect "/"
+      return true
+    else
+      return false
+    end
   end
 
   def destroy_session(cookie) : Bool
     valid = false
 
-    @sessions.each do |session|
-      if session == cookie
-        valid = true
-        @sessions.delete(session)
-        break
+    session = Model::Session.find_by(token: cookie)
+    if session && session.token.not_nil!
+      if session.token.not_nil! == cookie
+        session.destroy
+
+        valid = true unless session
       end
     end
 

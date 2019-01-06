@@ -1,19 +1,26 @@
 class FriendlyConfig
-  @@config : Config?
 
   @username : String
+  @email    : String
   @password : String
+
   def initialize
     @username = ""
+    @email    = ""
     @password = ""
   end
 
   def run
-    unless File.exists?("./data/config.json")
+    unless File.exists?("./data/database.db")
+      create_database
       start_config
-    else
-      verify_config
     end
+  end
+
+  def create_database
+    Model::User.migrator.drop_and_create
+    Model::Session.migrator.drop_and_create
+    Model::Monitor.migrator.drop_and_create
   end
 
   def start_config(retry = false)
@@ -26,6 +33,13 @@ class FriendlyConfig
         @username= username.downcase
         puts "Hello, #{@username}"
       end
+
+      if @email == ""
+        email = ask("Email", 5)
+        @email= email.downcase
+        puts "Got, #{@email}."
+      end
+
       pass = password("Password")
       puts
       confirmation = password("Confirm")
@@ -48,27 +62,13 @@ class FriendlyConfig
   end
 
   def save_config
-    File.open("./data/config.json", "w") do |file|
-      file.write({
-        admin: {
-          username: @username,
-          password: @password
-        }
-      }.to_json.to_slice)
-    end
+    Model::User.create(username: @username, email: @email, password: @password, role: Model::User::ROLE_ADMIN)
   end
 
   def create_bcrypt_password(string)
     puts "Processing password...".colorize(:yellow)
     @password = Crypto::Bcrypt::Password.create(string).to_s
     puts "Success!".colorize(:green).mode(:bold)
-  end
-
-  def verify_config
-    config = FriendlyConfig.config.not_nil!
-    unless config.admin["username"]? && config.admin["password"]?
-      start_config
-    end
   end
 
   def ask(label : String, min_length = 0)
@@ -95,11 +95,6 @@ class FriendlyConfig
     end
 
     return input
-  end
-
-  def self.config
-    @@config ||= Config.from_json(File.open("./data/config.json"))
-    return @@config
   end
 end
 
