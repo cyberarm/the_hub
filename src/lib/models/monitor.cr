@@ -9,6 +9,8 @@ class Model
     field game : String
     field key : String
 
+    field last_error : String
+
     timestamps
   end
 end

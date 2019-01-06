@@ -1,3 +1,7 @@
+def get_monitor(model_id)
+  Monitoring.instance.monitors.find {|m| m.model_id == model_id}
+end
+
 get "/admin" do |env|
   page_title = "Admin"
   monitoring = Monitoring.instance
@@ -7,7 +11,7 @@ end
 
 get "/admin/monitors" do |env|
   page_title = "Monitors | Admin"
-  monitoring = Monitoring.instance
+  monitors = Model::Monitor.all
   render "./src/views/admin/monitors/index.slang", "./src/views/admin/admin_layout.slang"
 end
 
@@ -40,6 +44,20 @@ get "/admin/monitors/:monitor/edit" do |env|
   if monitor
     page_title = "#{monitor.not_nil!.name.not_nil!} | Monitors | Admin"
     render "./src/views/admin/monitors/edit.slang", "./src/views/admin/admin_layout.slang"
+  else
+    halt(env, status_code: 404)
+  end
+end
+
+get "/admin/monitors/:monitor/delete" do |env|
+  monitor = Model::Monitor.find(env.params.url["monitor"].to_i)
+  if monitor
+    monitor.destroy
+    if monitor
+      halt(env, status_code: 500)
+    else
+      env.redirect "/admin/monitors"
+    end
   else
     halt(env, status_code: 404)
   end

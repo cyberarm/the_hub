@@ -17,59 +17,100 @@ class Monitoring
 
 
   property :check_monitors
-  getter :monitors, :system_monitors, :web_server_monitors, :game_server_monitors, :sensor_iot_monitors
+  getter :monitors#, :system_monitors, :web_server_monitors, :game_server_monitors, :sensor_iot_monitors
   def initialize
     # All monitors for looping through
     @monitors = [] of Monitor
 
-    # Monitor groups for accessing data easier
-    @system_monitors = [] of SystemMonitor
-    @web_server_monitors = [] of WebServerMonitor
-    @game_server_monitors = [] of GameServerMonitor
-    @sensor_iot_monitors = [] of SensorIoTMonitor
-
     @check_monitors = true
 
-    add_monitors("./data/monitors.json")
+    add_monitors
     run
   end
 
-  def add_monitors(file : String)
+  def web_server_monitors : Array(WebServerMonitor)
+    monitors = [] of WebServerMonitor
+    @monitors.map {|m| if m.is_a?(WebServerMonitor); m; end }.each do |monitor|
+      monitors << monitor if monitor
+    end
+
+    return monitors
+  end
+  def system_monitors : Array(SystemMonitor)
+    monitors = [] of SystemMonitor
+    @monitors.map {|m| if m.is_a?(SystemMonitor); m; end }.each do |monitor|
+      monitors << monitor if monitor
+    end
+
+    return monitors
+  end
+  def game_server_monitors : Array(GameServerMonitor)
+    monitors = [] of GameServerMonitor
+    @monitors.map {|m| if m.is_a?(GameServerMonitor); m; end }.each do |monitor|
+      monitors << monitor if monitor
+    end
+
+    return monitors
+  end
+  def sensor_iot_monitors : Array(SensorIoTMonitor)
+    monitors = [] of SensorIoTMonitor
+    @monitors.map {|m| if m.is_a?(SensorIoTMonitor); m; end }.each do |monitor|
+      monitors << monitor if monitor
+    end
+
+    return monitors
+  end
+
+  def add_monitors
     monitors = Model::Monitor.all
 
     if monitors
       monitors.each do |monitor|
-        case monitor.type
-        when "system"
-          m = SystemMonitor.new(monitor.name.not_nil!)
-          @monitors.push(m)
-          @system_monitors.push(m)
-        when "web"
-          m = WebServerMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-          @monitors.push(m)
-          @web_server_monitors.push(m)
-        when "gameserver"
-          case monitor.game.not_nil!
-          when "minecraft"
-            m = MinecraftMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-            @monitors.push(m)
-            @game_server_monitors.push(m)
-          when "minetest"
-            m = MinetestMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-            @monitors.push(m)
-            @game_server_monitors.push(m)
-          when "cncrenegade"
-            m = CNCRenegadeMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-            @monitors.push(m)
-            @game_server_monitors.push(m)
-          end
-        when "sensor"
-          m = SensorIoTMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!)
-          @monitors.push(m)
-          @sensor_iot_monitors.push(m)
-        end
+        p monitor.class
+        add_monitor(monitor)
       end
     end
+  end
+
+  def add_monitor(monitor)# : Model::Monitor
+    case monitor.type
+    when "system"
+      m = SystemMonitor.new(monitor.name.not_nil!)
+      m.model_id = monitor.id.not_nil!
+      @monitors.push(m)
+
+    when "web"
+      m = WebServerMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+      m.model_id = monitor.id.not_nil!
+      @monitors.push(m)
+
+    when "gameserver"
+      case monitor.game.not_nil!
+      when "minecraft"
+        m = MinecraftMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+        m.model_id = monitor.id.not_nil!
+        @monitors.push(m)
+
+      when "minetest"
+        m = MinetestMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+        m.model_id = monitor.id.not_nil!
+        @monitors.push(m)
+
+      when "cncrenegade"
+        m = CNCRenegadeMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
+        m.model_id = monitor.id.not_nil!
+        @monitors.push(m)
+      end
+
+    when "sensor"
+      m = SensorIoTMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!)
+      m.model_id = monitor.id.not_nil!
+      @monitors.push(m)
+    end
+  end
+
+  def delete_monitor(monitor_model_id)
+
   end
 
   def run
