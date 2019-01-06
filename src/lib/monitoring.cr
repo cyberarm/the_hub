@@ -11,13 +11,14 @@ class Monitoring
   # end
 
   @@singleton = new.as(self)
+
   def self.instance : Monitoring
     @@singleton
   end
 
-
   property :check_monitors
-  getter :monitors#, :system_monitors, :web_server_monitors, :game_server_monitors, :sensor_iot_monitors
+  getter :monitors # , :system_monitors, :web_server_monitors, :game_server_monitors, :sensor_iot_monitors
+
   def initialize
     # All monitors for looping through
     @monitors = [] of Monitor
@@ -29,31 +30,42 @@ class Monitoring
 
   def web_server_monitors : Array(WebServerMonitor)
     monitors = [] of WebServerMonitor
-    @monitors.map {|m| if m.is_a?(WebServerMonitor); m; end }.each do |monitor|
+    @monitors.map { |m| if m.is_a?(WebServerMonitor)
+      m
+    end }.each do |monitor|
       monitors << monitor if monitor
     end
 
     return monitors
   end
+
   def system_monitors : Array(SystemMonitor)
     monitors = [] of SystemMonitor
-    @monitors.map {|m| if m.is_a?(SystemMonitor); m; end }.each do |monitor|
+    @monitors.map { |m| if m.is_a?(SystemMonitor)
+      m
+    end }.each do |monitor|
       monitors << monitor if monitor
     end
 
     return monitors
   end
+
   def game_server_monitors : Array(GameServerMonitor)
     monitors = [] of GameServerMonitor
-    @monitors.map {|m| if m.is_a?(GameServerMonitor); m; end }.each do |monitor|
+    @monitors.map { |m| if m.is_a?(GameServerMonitor)
+      m
+    end }.each do |monitor|
       monitors << monitor if monitor
     end
 
     return monitors
   end
+
   def sensor_iot_monitors : Array(SensorIoTMonitor)
     monitors = [] of SensorIoTMonitor
-    @monitors.map {|m| if m.is_a?(SensorIoTMonitor); m; end }.each do |monitor|
+    @monitors.map { |m| if m.is_a?(SensorIoTMonitor)
+      m
+    end }.each do |monitor|
       monitors << monitor if monitor
     end
 
@@ -70,28 +82,23 @@ class Monitoring
     end
   end
 
-  def add_monitor(monitor)# : Model::Monitor
+  def add_monitor(monitor) # : Model::Monitor
     m = nil
 
     case monitor.type
     when "system"
       m = SystemMonitor.new(monitor.name.not_nil!)
-
     when "web"
       m = WebServerMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-
     when "game"
       case monitor.game.not_nil!
       when "minecraft"
         m = MinecraftMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-
       when "minetest"
         m = MinetestMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-
       when "cncrenegade"
         m = CNCRenegadeMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
       end
-
     when "sensor"
       m = SensorIoTMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!)
     end
@@ -131,10 +138,10 @@ class Monitoring
   end
 
   def get_monitor(model_id)
-    Monitoring.instance.monitors.find {|m| m.model_id == model_id}
+    Monitoring.instance.monitors.find { |m| m.model_id == model_id }
   end
 
   def get_monitor_object(monitor)
-    Monitoring.instance.monitors.find {|m| m == monitor}
+    Monitoring.instance.monitors.find { |m| m == monitor }
   end
 end

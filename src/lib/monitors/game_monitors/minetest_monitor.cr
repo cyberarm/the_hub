@@ -26,7 +26,7 @@ class MinetestMonitor < GameServerMonitor
       @socket.read(slice)
       loop do
         @socket.read(slice)
-        responses+=1
+        responses += 1
         break if responses >= 8
       end
       return true

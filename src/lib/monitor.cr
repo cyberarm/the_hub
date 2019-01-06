@@ -2,6 +2,7 @@ class Monitor
   property :name, :up, :uptime, :downtime, :last_error, :model_id, :check_monitor
   getter :last_checked_time, :update_interval, :has_run, :ping
   @model_id : Int64
+
   def initialize(name : String, update_interval : Float32)
     @name = name
     @up = false

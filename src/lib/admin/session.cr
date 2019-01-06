@@ -1,5 +1,5 @@
 class Session
-  def valid_session?(cookie : String) : Bool
+  def self.valid_session?(cookie : String) : Bool
     valid = false
 
     session = Model::Session.find_by(token: cookie)
@@ -12,7 +12,7 @@ class Session
     return valid
   end
 
-  def create_session(env, user_id : Int64, user_ip : String) : Bool
+  def self.create_session(env, user_id : Int64, user_ip : String) : Bool
     random = Random.new
     key = random.urlsafe_base64(32)
     session = Model::Session.create(user_id: user_id, token: key, user_ip: user_ip)
@@ -28,7 +28,7 @@ class Session
     end
   end
 
-  def destroy_session(cookie) : Bool
+  def self.destroy_session(cookie) : Bool
     valid = false
 
     session = Model::Session.find_by(token: cookie)

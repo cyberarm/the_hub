@@ -1,9 +1,9 @@
 class MinecraftMonitor < GameServerMonitor
-
   @mc_pinger : MCPing::Ping
   @mc_ping : MCPing::Ping::PingResponse?
 
   getter :ping
+
   def initialize(name : String, update_interval : Float32, domain : String)
     super(name, update_interval, domain)
 

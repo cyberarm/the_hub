@@ -2,7 +2,7 @@ class CNCRenegadeMonitor < GameServerMonitor
   def initialize(name : String, update_interval : Float32, domain : String)
     super(name, update_interval, domain)
 
-    @data  = {} of String => String
+    @data = {} of String => String
     @packets = [] of String
 
     @socket = UDPSocket.new
@@ -33,7 +33,6 @@ class CNCRenegadeMonitor < GameServerMonitor
 
         break if stop_loop
       end
-
     rescue IO::Timeout
       puts "#{self.class}: The Server At '#{@domain}' Did Not Respond In Time (Within 5 Seconds)"
       return false
@@ -93,10 +92,10 @@ class CNCRenegadeMonitor < GameServerMonitor
     parsed_hashes = {} of String => String
     packets.each do |packet|
       fields = packet.split("\\")
-      keys   = [] of String
+      keys = [] of String
       values = [] of String
 
-      packet.split("\\")[1..fields.size-1].each_with_index do |field, i|
+      packet.split("\\")[1..fields.size - 1].each_with_index do |field, i|
         keys << field if i.even?
         values << field if i.odd?
       end

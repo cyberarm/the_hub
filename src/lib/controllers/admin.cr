@@ -1,11 +1,11 @@
 def get_monitor(model_id)
-  Monitoring.instance.monitors.find {|m| m.model_id == model_id}
+  Monitoring.instance.monitors.find { |m| m.model_id == model_id }
 end
 
 get "/admin" do |env|
   page_title = "Admin"
   monitors = Model::Monitor.all
-  accounts   = Model::User.all
+  accounts = Model::User.all
   render "./src/views/admin/index.slang", "./src/views/admin/admin_layout.slang"
 end
 
@@ -35,7 +35,15 @@ post "/admin/monitors/new" do |env|
   update_interval = env.params.body["update_interval"].to_f
   game = env.params.body["game"].as(String)
 
-  m = Model::Monitor.create(name: name, type: type, domain: domain, update_interval: update_interval, game: game)
+  key = nil
+  game = nil unless type == "game"
+
+  if type == "sensor"
+    random = Random.new
+    key = random.urlsafe_base64(32)
+  end
+
+  m = Model::Monitor.create(name: name, type: type, domain: domain, update_interval: update_interval, game: game, key: key)
   if m && m.id != nil
     Monitoring.instance.add_monitor(m)
     if env.request.cookies["hub_message"]? && env.request.cookies["hub_message"].value.size > 0
@@ -43,9 +51,8 @@ post "/admin/monitors/new" do |env|
       env.response.cookies["hub_message"] = ""
     end
     env.redirect "/admin/monitors/#{m.id}"
-
   else
-    cookie = HTTP::Cookie.new("hub_message", "#{m.errors.map{|e| e.to_s}.join("<br/>")}")
+    cookie = HTTP::Cookie.new("hub_message", "#{m.errors.map { |e| e.to_s }.join("<br/>")}")
     cookie.http_only = true
     env.response.cookies["hub_message"] = cookie
     env.redirect "/admin/monitors/new"
@@ -112,7 +119,7 @@ post "/admin/sign-in" do |env|
 
   if user && username.downcase == user.username.not_nil!
     if check_password(user.password.not_nil!, password_from_form)
-      Session.instance.create_session(env, user.id.not_nil!, env.request.host.not_nil!)
+      Session.create_session(env, user.id.not_nil!, env.request.host.not_nil!)
     else
       cookie = HTTP::Cookie.new("hub_message", "Username or password was incorrect!")
       cookie.http_only = true
@@ -130,7 +137,7 @@ post "/admin/sign-in" do |env|
 end
 
 get "/admin/sign-out" do |env|
-  session = Session.instance.destroy_session(env.request.cookies["authentication_token"].value)
+  session = Session.destroy_session(env.request.cookies["authentication_token"].value)
   if session
     env.response.cookies["authentication_token"] = ""
   end
@@ -141,7 +148,7 @@ def bcrypt_password(password)
   Crypto::Bcrypt::Password.create(password)
 end
 
-def check_password(password_hash : String|Nil, password_from_form : String)
+def check_password(password_hash : String | Nil, password_from_form : String)
   if Crypto::Bcrypt::Password.new(password_hash) == password_from_form
     return true
   else

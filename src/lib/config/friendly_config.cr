@@ -1,12 +1,11 @@
 class FriendlyConfig
-
   @username : String
-  @email    : String
+  @email : String
   @password : String
 
   def initialize
     @username = ""
-    @email    = ""
+    @email = ""
     @password = ""
   end
 
@@ -23,41 +22,33 @@ class FriendlyConfig
     Model::Monitor.migrator.drop_and_create
   end
 
-  def start_config(retry = false)
-    start = "y" if retry
-    puts " Hub not configured, start configurator? [#{"Yes".colorize(:yellow).mode(:bold)}|#{"No".colorize(:red).mode(:bold)}]" unless retry
-    start = ask("Start?", 1) unless retry
-    if start.not_nil!.downcase.includes?("y")
-      if @username == ""
-        username = ask("Username", 4)
-        @username= username.downcase
-        puts "Hello, #{@username}"
-      end
+  def start_config
+    puts "Configure The Hub"
+    if @username == ""
+      username = ask("Username", 4)
+      @username = username.downcase
+      puts "Hello, #{@username}"
+    end
 
-      if @email == ""
-        email = ask("Email", 5)
-        @email= email.downcase
-        puts "Got, #{@email}."
-      end
+    if @email == ""
+      email = ask("Email", 5)
+      @email = email.downcase
+      puts "Got, #{@email}."
+    end
 
-      pass = password("Password")
+    pass = password("Password")
+    puts
+    confirmation = password("Confirm")
+    puts
+
+    if pass == confirmation
+      create_bcrypt_password(pass)
+      save_config
+    else
       puts
-      confirmation = password("Confirm")
+      puts "Error: Passwords did not match, try again...".colorize(:red).mode(:bold)
       puts
-
-      if pass == confirmation
-        create_bcrypt_password(pass)
-        save_config
-      else
-        puts
-        puts "Error: Passwords did not match, try again...".colorize(:red).mode(:bold)
-        puts
-        start_config(true)
-      end
-
-    else start.not_nil!.downcase.includes?("n")
-      puts "See you later then, bye."
-      exit
+      start_config
     end
   end
 

@@ -26,8 +26,8 @@ class Model
     timestamps
 
     ROLE_ADMIN = 512
-    ROLE_MOD   = 1
-    ROLE_USER  = 0
+    ROLE_MOD   =   1
+    ROLE_USER  =   0
 
     def self.get_role_name(role : Int32) : String
       case role

@@ -2,6 +2,7 @@ require "halite"
 
 class WebServerMonitor < Monitor
   getter :domain
+
   def initialize(name : String, update_interval : Float32, domain : String)
     super(name, update_interval)
     @domain = domain
@@ -24,7 +25,7 @@ class WebServerMonitor < Monitor
   end
 
   def check
-    @has_run   = true
+    @has_run = true
     connection = check_connection
     @last_checked_time = Time.monotonic
 
@@ -39,7 +40,6 @@ class WebServerMonitor < Monitor
         @up = false
         return false
       end
-
     else
       @downtime = Time.monotonic if @up
       @up = false

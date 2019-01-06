@@ -69,7 +69,7 @@ def is_xhr?(env)
 end
 
 def authenticated?(env)
-  if env.request.cookies["authentication_token"]? && Session.instance.valid_session?(env.request.cookies["authentication_token"].value)
+  if env.request.cookies["authentication_token"]? && Session.valid_session?(env.request.cookies["authentication_token"].value)
     return true
   else
     return false
