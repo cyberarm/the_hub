@@ -1,5 +1,5 @@
 class Monitor
-  property :name, :up, :uptime, :downtime, :last_error, :model_id
+  property :name, :up, :uptime, :downtime, :last_error, :model_id, :check_monitor
   getter :last_checked_time, :update_interval, :has_run, :ping
   @model_id : Int64
   def initialize(name : String, update_interval : Float32)
@@ -15,6 +15,7 @@ class Monitor
     @update_interval = update_interval # seconds between checks
 
     @model_id = 0
+    @check_monitor = true
 
     setup
   end

@@ -4,7 +4,7 @@ end
 
 get "/admin" do |env|
   page_title = "Admin"
-  monitoring = Monitoring.instance
+  monitors = Model::Monitor.all
   accounts   = Model::User.all
   render "./src/views/admin/index.slang", "./src/views/admin/admin_layout.slang"
 end
@@ -25,7 +25,13 @@ post "/admin/monitors/new" do |env|
   type = env.params.body["type"].as(String)
   domain = env.params.body["domain"].as(String)
 
-  Model::Monitor.create(name: name, type: type, domain: domain)
+  m = Model::Monitor.create(name: name, type: type, domain: domain)
+  if m
+    Monitoring.instance.add_monitor(m)
+    env.redirect "/admin/monitors/#{m.id}"
+  else
+    env.redirect "/admin/monitors/new"
+  end
 end
 
 get "/admin/monitors/:monitor" do |env|
@@ -52,11 +58,11 @@ end
 get "/admin/monitors/:monitor/delete" do |env|
   monitor = Model::Monitor.find(env.params.url["monitor"].to_i)
   if monitor
-    monitor.destroy
-    if monitor
-      halt(env, status_code: 500)
-    else
+    if monitor.destroy
+      Monitoring.instance.delete_monitor(monitor.id)
       env.redirect "/admin/monitors"
+    else
+      halt(env, status_code: 500)
     end
   else
     halt(env, status_code: 404)

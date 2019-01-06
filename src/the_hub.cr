@@ -5,6 +5,7 @@ require "hardware"
 require "json"
 require "random/secure"
 require "crypto/bcrypt/password"
+require "colorize"
 
 require "mcping"
 
@@ -18,7 +19,9 @@ require "./lib/models/*"
 
 require "./lib/config/*"
 require "./lib/admin/*"
+require "./lib/controllers/*"
 
-require "./lib/*"
+require "./lib/monitor"
+require "./lib/monitoring"
 
 Kemal.run

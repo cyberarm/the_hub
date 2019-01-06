@@ -25,7 +25,6 @@ class Monitoring
     @check_monitors = true
 
     add_monitors
-    run
   end
 
   def web_server_monitors : Array(WebServerMonitor)
@@ -66,69 +65,76 @@ class Monitoring
 
     if monitors
       monitors.each do |monitor|
-        p monitor.class
         add_monitor(monitor)
       end
     end
   end
 
   def add_monitor(monitor)# : Model::Monitor
+    m = nil
+
     case monitor.type
     when "system"
       m = SystemMonitor.new(monitor.name.not_nil!)
-      m.model_id = monitor.id.not_nil!
-      @monitors.push(m)
 
     when "web"
       m = WebServerMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-      m.model_id = monitor.id.not_nil!
-      @monitors.push(m)
 
     when "gameserver"
       case monitor.game.not_nil!
       when "minecraft"
         m = MinecraftMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-        m.model_id = monitor.id.not_nil!
-        @monitors.push(m)
 
       when "minetest"
         m = MinetestMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-        m.model_id = monitor.id.not_nil!
-        @monitors.push(m)
 
       when "cncrenegade"
         m = CNCRenegadeMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!, monitor.domain.not_nil!)
-        m.model_id = monitor.id.not_nil!
-        @monitors.push(m)
       end
 
     when "sensor"
       m = SensorIoTMonitor.new(monitor.name.not_nil!, monitor.update_interval.not_nil!)
+    end
+
+    if m
       m.model_id = monitor.id.not_nil!
       @monitors.push(m)
+
+      run(m)
     end
   end
 
   def delete_monitor(monitor_model_id)
-
+    monitor = get_monitor(monitor_model_id)
+    if monitor
+      @monitors.delete(monitor)
+    end
   end
 
-  def run
-    @monitors.each do |monitor|
-      spawn do
-        while @check_monitors
-          if monitor.has_run
-            if ((Time.monotonic - monitor.last_checked_time).to_i < monitor.update_interval)
-            else
-              monitor.check
-            end
+  def run(monitor)
+    spawn do
+      while @check_monitors
+        break unless get_monitor_object(monitor)
+
+        if monitor.has_run
+          if ((Time.monotonic - monitor.last_checked_time).to_i < monitor.update_interval)
           else
             monitor.check
           end
-
-          sleep 0.1
+        else
+          monitor.check
         end
+
+        sleep 0.1
       end
     end
+  end
+
+  def get_monitor(model_id)
+    Monitoring.instance.monitors.find {|m| m.model_id == model_id}
+  end
+
+  def get_monitor_object(monitor)
+    Monitoring.instance.monitors.find {|m| m == monitor}
   end
 end
