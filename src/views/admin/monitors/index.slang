@@ -1,7 +1,9 @@
 h1.title All Monitors
 center
-  p
+  p.button
     a href="/admin/monitors/new" Add Monitor
+br
+
 .monitors
   - if monitors
     - monitors.each do |db_monitor|

@@ -63,7 +63,7 @@ class SystemMonitor < Monitor
     end
   end
 
-  def to_json
+  def to_hash
     {
       name: @name,
       up: @up,
@@ -79,6 +79,6 @@ class SystemMonitor < Monitor
       memory_total: @memory.total,
       net_download: @net_download,
       net_upload: @net_upload
-    }.to_json
+    }
   end
 end

@@ -11,6 +11,7 @@ end
 
 get "/admin/monitors" do |env|
   page_title = "Monitors | Admin"
+  errors = [] of String
   monitors = Model::Monitor.all
   render "./src/views/admin/monitors/index.slang", "./src/views/admin/admin_layout.slang"
 end
@@ -18,6 +19,13 @@ end
 get "/admin/monitors/new" do |env|
   page_title = "Add Monitor | Admin"
   monitoring = Monitoring.instance
+
+  hub_message = nil
+  if env.request.cookies["hub_message"]? && env.request.cookies["hub_message"].value.size > 0
+    hub_message = env.request.cookies["hub_message"].value
+    env.response.cookies["hub_message"] = ""
+  end
+
   render "./src/views/admin/monitors/new.slang", "./src/views/admin/admin_layout.slang"
 end
 post "/admin/monitors/new" do |env|
@@ -28,10 +36,18 @@ post "/admin/monitors/new" do |env|
   game = env.params.body["game"].as(String)
 
   m = Model::Monitor.create(name: name, type: type, domain: domain, update_interval: update_interval, game: game)
-  if m
+  if m && m.id != nil
     Monitoring.instance.add_monitor(m)
+    if env.request.cookies["hub_message"]? && env.request.cookies["hub_message"].value.size > 0
+      hub_message = env.request.cookies["hub_message"].value
+      env.response.cookies["hub_message"] = ""
+    end
     env.redirect "/admin/monitors/#{m.id}"
+
   else
+    cookie = HTTP::Cookie.new("hub_message", "#{m.errors.map{|e| e.to_s}.join("<br/>")}")
+    cookie.http_only = true
+    env.response.cookies["hub_message"] = cookie
     env.redirect "/admin/monitors/new"
   end
 end

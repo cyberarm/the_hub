@@ -1,13 +1,4 @@
 class Session
-  @@singleton = new.as(self)
-  def self.instance : Session
-    @@singleton
-  end
-
-  @sessions = [] of String
-  def initialize
-  end
-
   def valid_session?(cookie : String) : Bool
     valid = false
 

@@ -26,6 +26,9 @@ class Monitor
   def check
   end
 
+  def sync # Sync with Database regarding name, domain, ect.
+  end
+
   def mini_status
     ""
   end
@@ -46,9 +49,13 @@ class Monitor
     "#{downtime.days}d #{downtime.hours}h #{downtime.minutes}m #{downtime.seconds}s"
   end
 
+  def to_hash
+    {name: @name, up: @up, uptime: uptime.to_f, downtime: downtime.to_f, last_error: @last_error, last_checked_time: @last_checked_time.to_f}
+  end
+
   # Hash -> JSON expected
   def to_json
-    {name: @name, up: @up, uptime: uptime.to_f, downtime: downtime.to_f, last_error: @last_error, last_checked_time: @last_checked_time.to_f}.to_json
+    to_hash.to_json
   end
 end
 

@@ -5,7 +5,7 @@ h1.title Sign In
       h2 Sign In
     .monito_content
       - if hub_message
-        p.down #{hub_message}
+        p.error #{hub_message}
       form method="post" url="/admin/sign-in"
         label for="username" Username
         br
