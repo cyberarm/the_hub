@@ -19,26 +19,26 @@ class Monitoring
   property :check_monitors
   getter :monitors, :monitor_types, :monitor_game_types
 
-    def self.monitor_types
-      {
-        "web": "Web Server",
-        "game": "Game Server",
-        "sensor": "Sensor or IOT",
-        "system": "System"
-      }
-    end
+  def self.monitor_types
+    {
+      "web":    "Web Server",
+      "game":   "Game Server",
+      "sensor": "Sensor or IOT",
+      "system": "System",
+    }
+  end
 
-    def self.monitor_type_keys : Array
-      Monitoring.monitor_types.keys.map {|k| k.to_s}
-    end
+  def self.monitor_type_keys : Array
+    Monitoring.monitor_types.keys.map { |k| k.to_s }
+  end
 
-    def self.monitor_game_types
-      {
-        "cncrenegade": "Command & Conquer: Renegade",
-        "minecraft": "Minecraft",
-        "minetest": "mintest"
-      }
-    end
+  def self.monitor_game_types
+    {
+      "cncrenegade": "Command & Conquer: Renegade",
+      "minecraft":   "Minecraft",
+      "minetest":    "mintest",
+    }
+  end
 
   def initialize
     # All monitors for looping through
@@ -159,6 +159,7 @@ class Monitoring
             rescue e
               monitor.up = false
               monitor.last_checked_time = Time.monotonic
+              monitor.last_error = e.to_s
               puts "#{monitor.name} encountered an error: #{e}"
             end
           end
@@ -169,6 +170,7 @@ class Monitoring
             monitor.up = false
             monitor.has_run = true
             monitor.last_checked_time = Time.monotonic
+            monitor.last_error = e.to_s
             puts "#{monitor.name} encountered an error: #{e}"
           end
         end

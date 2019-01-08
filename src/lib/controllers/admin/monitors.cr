@@ -78,26 +78,24 @@ post "/admin/monitors/:monitor/edit" do |env|
   monitor = Model::Monitor.find(env.params.url["monitor"].to_i)
 
   if monitor
-      name = env.params.body["name"]?.to_s
-      type = env.params.body["type"]?.to_s
-      domain = env.params.body["domain"]?.to_s
-      update_interval = env.params.body["update_interval"]?.to_s.to_f
-      game = env.params.body["game"]?.to_s
+    name = env.params.body["name"]?.to_s
+    type = env.params.body["type"]?.to_s
+    domain = env.params.body["domain"]?.to_s
+    update_interval = env.params.body["update_interval"]?.to_s.to_f
+    game = env.params.body["game"]?.to_s
 
-      key = nil
-      game = nil unless type == "game"
+    key = nil
+    game = nil unless type == "game"
 
     if monitor.update(name: name, type: type, domain: domain, update_interval: update_interval, game: game, key: key)
       Monitoring.instance.sync_monitor(monitor)
       env.redirect "/admin/monitors/#{monitor.id}"
-
     else
       cookie = HTTP::Cookie.new("hub_message", "#{monitor.errors.map { |e| e.to_s }.join("<br/>")}")
       cookie.http_only = true
       env.response.cookies["hub_message"] = cookie
       env.redirect "/admin/monitors/new"
     end
-
   else
     env.redirect "/admin/monitors"
   end
