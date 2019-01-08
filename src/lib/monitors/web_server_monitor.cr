@@ -8,6 +8,12 @@ class WebServerMonitor < Monitor
     @domain = domain
   end
 
+  def sync(monitor : Model::Monitor)
+    super
+
+    @domain = monitor.domain.not_nil!
+  end
+
   def check_connection
     start_time = Time.monotonic
 

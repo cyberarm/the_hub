@@ -1,4 +1,5 @@
 $primary_font_family: Courier New, Courier, monospace
+$input_border_color: #999
 
 html, body
   padding: 0
@@ -153,7 +154,7 @@ input[type=text], input[type=password], input[type=email], select
   padding: 12pt 20pt
   margin: 8pt 0
   display: inline-block
-  border: 1pt solid #ccc
+  border: 1pt solid $input_border_color
   border-radius: 4pt
   box-sizing: border-box
   font-family: $primary_font_family
@@ -164,7 +165,7 @@ input[type=button], input[type=submit], input[type=reset]
   padding: 12pt 20pt
   margin: 8pt 0
   display: inline-block
-  border: 1pt solid #ccc
+  border: 1pt solid $input_border_color
   border-radius: 4pt
   box-sizing: border-box
   background: seagreen
@@ -188,7 +189,7 @@ textarea
   height: 250pt
   padding: 12pt 20pt
   box-sizing: border-box
-  border: 1pt solid #ccc
+  border: 1pt solid $input_border_color
   border-radius: 4pt
   background-color: #f8f8f8
   resize: none

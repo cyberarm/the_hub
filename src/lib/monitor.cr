@@ -1,6 +1,6 @@
 class Monitor
-  property :name, :up, :uptime, :downtime, :last_error, :model_id, :check_monitor
-  getter :last_checked_time, :update_interval, :has_run, :ping
+  property :name, :up, :uptime, :downtime, :last_error, :model_id, :check_monitor, :has_run, :last_checked_time
+  getter :update_interval, :ping
   @model_id : Int64
 
   def initialize(name : String, update_interval : Float32)
@@ -27,7 +27,9 @@ class Monitor
   def check
   end
 
-  def sync # Sync with Database regarding name, domain, ect.
+  def sync(model : Model::Monitor) # Sync with Database regarding name, domain, ect.
+    @name = model.name.not_nil!
+    @update_interval = model.update_interval.not_nil!
   end
 
   def mini_status

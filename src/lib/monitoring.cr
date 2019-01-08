@@ -17,7 +17,28 @@ class Monitoring
   end
 
   property :check_monitors
-  getter :monitors # , :system_monitors, :web_server_monitors, :game_server_monitors, :sensor_iot_monitors
+  getter :monitors, :monitor_types, :monitor_game_types
+
+    def self.monitor_types
+      {
+        "web": "Web Server",
+        "game": "Game Server",
+        "sensor": "Sensor or IOT",
+        "system": "System"
+      }
+    end
+
+    def self.monitor_type_keys : Array
+      Monitoring.monitor_types.keys.map {|k| k.to_s}
+    end
+
+    def self.monitor_game_types
+      {
+        "cncrenegade": "Command & Conquer: Renegade",
+        "minecraft": "Minecraft",
+        "minetest": "mintest"
+      }
+    end
 
   def initialize
     # All monitors for looping through
@@ -111,6 +132,13 @@ class Monitoring
     end
   end
 
+  def sync_monitor(monitor_db_model : Model::Monitor)
+    monitor = get_monitor(monitor_db_model.id)
+    if monitor
+      monitor.sync(monitor_db_model)
+    end
+  end
+
   def delete_monitor(monitor_model_id)
     monitor = get_monitor(monitor_model_id)
     if monitor
@@ -126,10 +154,23 @@ class Monitoring
         if monitor.has_run
           if ((Time.monotonic - monitor.last_checked_time).to_i < monitor.update_interval)
           else
-            monitor.check
+            begin
+              monitor.check
+            rescue e
+              monitor.up = false
+              monitor.last_checked_time = Time.monotonic
+              puts "#{monitor.name} encountered an error: #{e}"
+            end
           end
         else
-          monitor.check
+          begin
+            monitor.check
+          rescue e
+            monitor.up = false
+            monitor.has_run = true
+            monitor.last_checked_time = Time.monotonic
+            puts "#{monitor.name} encountered an error: #{e}"
+          end
         end
 
         sleep 0.1

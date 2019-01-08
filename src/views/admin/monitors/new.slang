@@ -14,10 +14,8 @@ h1.title New Monitor
         label for="type" Type
         br
         select id="type" name="type" required="true"
-          option value="web" Web Server
-          option value="game" Game Server
-          option value="sensor" Sensor or IOT
-          option value="system" System
+          - Monitoring.monitor_types.each do |key, value|
+              option value="#{key}" #{value}
         br
         br
         label for="update_interval" Update Interval (seconds)
@@ -33,9 +31,9 @@ h1.title New Monitor
         label for="game" Game
         br
         select id="game" name="game"
-          option value="minecraft" Minecraft
-          option value="minetest" Minetest
-          option value="cncrenegade" Command and Conquer: Renegade
+          option value="" selected="true" disabled="true" hidden="true"
+          - Monitoring.monitor_game_types.each do |key, value|
+              option value="#{key}" #{value}
         br
         br
         input.button type="submit" value="Add"

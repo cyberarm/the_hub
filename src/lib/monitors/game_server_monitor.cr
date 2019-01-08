@@ -6,6 +6,11 @@ class GameServerMonitor < Monitor
     super(name, update_interval)
   end
 
+  def sync(model : Model::Monitor)
+    super
+    @domain = model.domain.not_nil!
+  end
+
   def report
     "N/A"
   end
