@@ -22,7 +22,7 @@ html
       .nav_button
         p
           a href="/sensors" Sensors/IoT
-      - if authenticated?(env)
+      - if authenticated?(env) && admin?(env)
         .nav_button class="admin"
           p
             a href="/admin" Admin

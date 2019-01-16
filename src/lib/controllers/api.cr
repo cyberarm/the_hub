@@ -1,10 +1,14 @@
+before_all("/api") do |env|
+  next # TODO: check access token
+end
+
 get "/api" do |env|
   "
 ENDPOINTS
   * /api/systems
   * /api/web-servers
   * /api/game-servers
-  * /api/sensors-iot
+  * /api/sensors
 "
 end
 
@@ -32,7 +36,7 @@ get "/api/game-servers" do |env|
   "[#{list.join(",")}]"
 end
 
-get "/api/sensors-iot" do |env|
+get "/api/sensors" do |env|
   env.response.content_type = "application/json"
 
   list = [] of String
@@ -40,6 +44,9 @@ get "/api/sensors-iot" do |env|
   "[#{list.join(",")}]"
 end
 
-post "/api/sensors-iot/update" do |env|
+post "/api/sensors/update" do |env|
+  # UNIQUE MONITOR KEY : String
+  # STATUS : Int (http status codes seem fine)
+  # Payload : JSON string
   env.params
 end

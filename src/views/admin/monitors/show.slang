@@ -7,3 +7,8 @@ h1.title #{monitor.name}
       - if m
         - m.to_hash.each do |key, value|
           p #{key}: #{value}
+      p
+        a href="/admin/monitors/#{monitor.id}/edit" Edit
+        |/
+        span.admin
+          a href="/admin/monitors/#{monitor.id}/delete" Delete

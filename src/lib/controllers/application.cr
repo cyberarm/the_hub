@@ -1,6 +1,10 @@
-before_all do |env|
-  if authenticated?(env) || env.request.path.includes?("/admin/sign-in") || env.request.path.includes?("/css/application.css")
-    next
+before_all("/admin") do |env|
+  if authenticated?(env) || env.request.path.includes?("/admin/sign-in")
+    if admin?(env)
+      next
+    else
+      halt(env, status_code: 401)
+    end
   else
     env.redirect "/admin/sign-in"
   end
@@ -73,5 +77,41 @@ def authenticated?(env)
     return true
   else
     return false
+  end
+end
+
+def current_user(env)
+  cookie = env.request.cookies["authentication_token"].value
+  session = Model::Session.find_by(token: cookie)
+
+  begin
+    return Model::User.find(session.not_nil!.user_id).not_nil!
+  rescue
+    return nil
+  end
+end
+
+def admin?(env)
+  user = current_user(env)
+  if user
+    user.role == Model::User::ROLE_ADMIN
+  else
+    false
+  end
+end
+def mod?(env)
+  user = current_user(env)
+  if user
+    user.role == Model::User::ROLE_MOD
+  else
+    false
+  end
+end
+def user?(env)
+  user = current_user(env)
+  if user
+    user.role == Model::User::ROLE_USER
+  else
+    false
   end
 end
