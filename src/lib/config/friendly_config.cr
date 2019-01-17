@@ -13,6 +13,20 @@ class FriendlyConfig
     unless File.exists?("./data/database.db")
       create_database
       start_config
+    else
+      verify_admin_account
+    end
+  end
+
+  def verify_admin_account
+    begin
+      admins = Model::User.find_by(role: Model::User::ROLE_ADMIN)
+    rescue SQLite3::Exception
+    end
+
+    unless admins
+      create_database
+      start_config
     end
   end
 
@@ -20,6 +34,7 @@ class FriendlyConfig
     Model::User.migrator.drop_and_create
     Model::Session.migrator.drop_and_create
     Model::Monitor.migrator.drop_and_create
+    Model::ApiKey.migrator.drop_and_create
   end
 
   def start_config

@@ -1,16 +1,6 @@
-before_all("/admin") do |env|
-  if authenticated?(env) || env.request.path.includes?("/admin/sign-in")
-    if admin?(env)
-      next
-    else
-      halt(env, status_code: 401)
-    end
-  else
-    env.redirect "/admin/sign-in"
-  end
-end
-
 get "/" do |env|
+  env.redirect "/admin/sign-in" unless authenticated?(env) || allow_dashboard
+
   page_title = "Overview"
   monitors = Monitoring.instance
   if is_xhr?(env)
@@ -21,6 +11,8 @@ get "/" do |env|
 end
 
 get "/systems" do |env|
+  env.redirect "/" unless authenticated?(env) || allow_basic
+
   page_title = "Systems"
   monitors = Monitoring.instance.system_monitors
   if is_xhr?(env)
@@ -31,6 +23,8 @@ get "/systems" do |env|
 end
 
 get "/web-servers" do |env|
+  env.redirect "/" unless authenticated?(env) || allow_basic
+
   page_title = "Web Servers"
   monitors = Monitoring.instance.web_server_monitors
   if is_xhr?(env)
@@ -41,6 +35,8 @@ get "/web-servers" do |env|
 end
 
 get "/game-servers" do |env|
+  env.redirect "/" unless authenticated?(env) || allow_basic
+
   page_title = "Game Servers"
   monitors = Monitoring.instance.game_server_monitors
   if is_xhr?(env)
@@ -51,6 +47,8 @@ get "/game-servers" do |env|
 end
 
 get "/sensors" do |env|
+  env.redirect "/" unless authenticated?(env) || allow_basic
+
   page_title = "Sensors"
   monitors = Monitoring.instance.sensor_iot_monitors
   if is_xhr?(env)
@@ -65,13 +63,10 @@ get "/css/application.css" do |env|
 end
 
 def is_xhr?(env)
-  begin
-    return true if env.request.headers["X-XHR"] == "xmlhttprequest"
-  rescue KeyError
-    return false
-  end
+  env.request.headers["X-XHR"]? == "xmlhttprequest"
 end
 
+# Does the visitor have a valid session cookie?
 def authenticated?(env)
   if env.request.cookies["authentication_token"]? && Session.valid_session?(env.request.cookies["authentication_token"].value)
     return true
@@ -80,6 +75,19 @@ def authenticated?(env)
   end
 end
 
+# TODO: Implement DB backed config for this
+# boolean - permit any visitor to access basic dashboard?
+def allow_dashboard
+  return false
+end
+
+# TODO: Implement DB backed config for this
+# boolean - permit any visitor to access monitors? (does not allow /admin access)
+def allow_basic
+  return false
+end
+
+# Return Model::User object or Nil if no user was found
 def current_user(env)
   cookie = env.request.cookies["authentication_token"].value
   session = Model::Session.find_by(token: cookie)

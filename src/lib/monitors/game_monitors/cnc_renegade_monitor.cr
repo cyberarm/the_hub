@@ -116,4 +116,21 @@ class CNCRenegadeMonitor < GameServerMonitor
     packets = (queryid.split(".").last).to_i
     return packets
   end
+
+  def to_hash
+    orginal_hash = super.to_h
+    hash = {} of String => String
+
+    if @up && @data
+      if @data.dig?("numplayers") && @data.dig?("maxplayers")
+        hash["numplayers"] = @data["numplayers"]
+        hash["maxplayers"] = @data["maxplayers"]
+      end
+
+      hash["mapname"] = @data["mapname"]
+      hash["timeleft"] = formatted_timeleft
+    end
+
+    orginal_hash.merge(hash)
+  end
 end

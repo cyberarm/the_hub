@@ -10,18 +10,19 @@ html
       .nav_button
         p
           a href="/" Overview
-      .nav_button
-        p
-          a href="/systems" Systems
-      .nav_button
-        p
-          a href="/web-servers" Web Servers
-      .nav_button
-        p
-          a href="/game-servers" Game Servers
-      .nav_button
-        p
-          a href="/sensors" Sensors/IoT
+      - if authenticated?(env) || allow_basic
+        .nav_button
+          p
+            a href="/systems" Systems
+        .nav_button
+          p
+            a href="/web-servers" Web Servers
+        .nav_button
+          p
+            a href="/game-servers" Game Servers
+        .nav_button
+          p
+            a href="/sensors" Sensors/IoT
       - if authenticated?(env) && admin?(env)
         .nav_button class="admin"
           p

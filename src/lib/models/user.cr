@@ -1,6 +1,10 @@
 class Model
   class User < Granite::Base
     adapter sqlite
+    table_name :users
+
+    has_many :sessions
+    has_many :api_keys
 
     field username : String
     field email : String
@@ -29,8 +33,8 @@ class Model
     ROLE_MOD   =   1
     ROLE_USER  =   0
 
-    def self.get_role_name(role : Int32) : String
-      case role
+    def role_name : String
+      case self.role
       when ROLE_ADMIN
         return "Administrator"
       when ROLE_MOD

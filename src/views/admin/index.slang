@@ -22,5 +22,4 @@ h1.title class="admin" Administration
     .monitor_content
       - if accounts
         - accounts.each do |account|
-          p
-            a href="/admin/accounts/#{account.username}" =account.username
+          p #{account.role_name} #{account.username}

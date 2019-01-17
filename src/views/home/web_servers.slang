@@ -10,6 +10,7 @@ h1.title Web Servers
       .monitor_content
         - if monitor.up
           p Uptime #{monitor.formatted_uptime}
+          p Ping #{monitor.ping}ms
         - else
           p Downtime #{monitor.formatted_downtime}
           p Last error #{monitor.last_error}

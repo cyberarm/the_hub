@@ -1,13 +1,14 @@
 class Model
   class Monitor < Granite::Base
     adapter sqlite
+    table_name :monitors
 
     field name : String
     field type : String
     field update_interval : Float32
-    field domain : String?
-    field game : String?
-    field key : String?
+    field domain : String
+    field game : String
+    field key : String
 
     field last_error : String
 

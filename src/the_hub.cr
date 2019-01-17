@@ -15,12 +15,14 @@ end
 
 require "granite/adapter/sqlite"
 Granite::Adapters << Granite::Adapter::Sqlite.new({name: "sqlite", url: "sqlite3:./data/database.db"})
+require "./lib/models/*"
+
+
+require "./lib/config/*"
+
 require "./lib/monitor"
 require "./lib/monitoring"
 
-require "./lib/models/*"
-
-require "./lib/config/*"
 require "./lib/admin/*"
 require "./lib/controllers/*"
 

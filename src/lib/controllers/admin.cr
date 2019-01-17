@@ -2,6 +2,20 @@ def get_monitor(model_id)
   Monitoring.instance.monitors.find { |m| m.model_id == model_id }
 end
 
+before_all("/admin*") do |env|
+  next if env.request.path.includes?("/admin/sign-in")
+
+  if authenticated?(env)
+    if admin?(env)
+      next
+    else
+      halt(env, status_code: 401)
+    end
+  else
+    env.redirect "/admin/sign-in"
+  end
+end
+
 get "/admin" do |env|
   page_title = "Admin"
   monitors = Model::Monitor.all

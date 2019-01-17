@@ -61,4 +61,18 @@ class MinecraftMonitor < GameServerMonitor
       ""
     end
   end
+
+  def to_hash
+    orginal_hash = super.to_h
+    hash = {} of String => String | Int32
+
+    if @up && @mc_ping
+      hash["description"] = @mc_ping.not_nil!.description.text
+
+      hash["numplayers"] = @mc_ping.not_nil!.players.online
+      hash["maxplayers"] = @mc_ping.not_nil!.players.max
+    end
+
+    orginal_hash.merge(hash)
+  end
 end

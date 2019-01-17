@@ -1,8 +1,13 @@
-before_all("/api") do |env|
+before_all("/api/*") do |env|
+  next if env.request.path == "/api" || env.request.path == "/api/"
+
+  puts "Got request form: #{env.request.host} for #{env.request.path}"
   next # TODO: check access token
 end
 
 get "/api" do |env|
+  env.response.content_type = "text/plain"
+
   "
 ENDPOINTS
   * /api/systems
