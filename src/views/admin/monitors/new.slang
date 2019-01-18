@@ -18,7 +18,7 @@ h1.title New Monitor
         br
         label for="update_interval" Update Interval (seconds)
         br
-        input type="text" id="update_interval" name="update_interval" placeholder="1.0" required="true"
+        input type="number" min="1" step="0.01" id="update_interval" name="update_interval" placeholder="1.0" required="true"
         br
         br
         label for="domain" Domain

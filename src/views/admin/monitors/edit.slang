@@ -2,7 +2,6 @@ h1.title=monitor.name
 .monitors
   .monitor
     .monitor_label
-      p=monitor.inspect
     .monitor_content
       form method="post" url="/admin/monitors/#{monitor.id}/edit"
         label for="name" Name
@@ -22,7 +21,7 @@ h1.title=monitor.name
         br
         label for="update_interval" Update Interval (seconds)
         br
-        input type="text" id="update_interval" name="update_interval" placeholder="1.0" required="true"  value="#{monitor.update_interval}"
+        input type="number" min="1" step="0.01" id="update_interval" name="update_interval" placeholder="1.0" required="true"  value="#{monitor.update_interval}"
         br
         br
         label for="domain" Domain
