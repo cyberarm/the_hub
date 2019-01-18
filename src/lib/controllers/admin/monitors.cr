@@ -30,6 +30,7 @@ post "/admin/monitors/new" do |env|
   if m && m.id != nil
     Monitoring.instance.add_monitor(m)
 
+    env.flash[:notice] = "Monitor was successfully created"
     env.redirect "/admin/monitors/#{m.id}"
   else
     env.flash[:error] = "#{m.errors.map { |e| e.to_s }.join("<br/>")}"
@@ -73,13 +74,15 @@ post "/admin/monitors/:monitor/edit" do |env|
 
     if monitor.update(name: name, type: type, domain: domain, update_interval: update_interval, game: game, key: key)
       Monitoring.instance.sync_monitor(monitor)
+
+      env.flash[:notice] = "monitor was successfully updated"
       env.redirect "/admin/monitors/#{monitor.id}"
     else
       env.flash[:error] = "#{monitor.errors.map { |e| e.to_s }.join("<br/>")}"
       env.redirect "/admin/monitors/#{monitor.id}/edit"
     end
   else
-    env.redirect "/admin/monitors"
+    halt(env, status_code: 404)
   end
 end
 
@@ -88,9 +91,12 @@ get "/admin/monitors/:monitor/delete" do |env|
   if monitor
     if monitor.destroy
       Monitoring.instance.delete_monitor(monitor.id)
+
+      env.flash[:notice] = "Monitor was successfully destroyed"
       env.redirect "/admin/monitors"
     else
-      halt(env, status_code: 500)
+      env.flash[:error] = "Failed to destroy monitor!"
+      env.redirect "/admin/monitors/#{monitor.id}"
     end
   else
     halt(env, status_code: 404)

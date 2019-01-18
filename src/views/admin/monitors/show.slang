@@ -11,4 +11,4 @@ h1.title #{monitor.name}
         a href="/admin/monitors/#{monitor.id}/edit" Edit
         |/
         span.admin
-          a href="/admin/monitors/#{monitor.id}/delete" Delete
+          a href="/admin/monitors/#{monitor.id}/delete" onclick="return confirm('Are you sure?');" Delete

@@ -23,4 +23,4 @@ br
             a href="/admin/monitors/#{db_monitor.id}/edit" Edit
             |/
             span.admin
-              a href="/admin/monitors/#{db_monitor.id}/delete" Delete
+              a href="/admin/monitors/#{db_monitor.id}/delete" onclick="return confirm('Are you sure?');" Delete
