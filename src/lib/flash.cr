@@ -8,6 +8,8 @@ class Flash
     @now  = {} of String => String
     @next = {} of String => String
 
+    @keep = false
+
     cookie = context.request.cookies[@flash_cookie]?
     begin
       return unless cookie
@@ -48,9 +50,20 @@ class Flash
     @now.size > 0
   end
 
+  # Don't destroy cookies this round
+  def keep!
+    @keep = true
+  end
+
+  def keep?
+    @keep
+  end
+
   # Write changes.
   # NOTE to self: don't name methods .finalize, Crystal's GC started complaining. :D
   def complete
+    return if @keep
+
     # Overwrite previous cookie if anything to flash
     if @next.size > 0
       cookie = HTTP::Cookie.new(@flash_cookie, @next.to_json)

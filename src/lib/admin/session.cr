@@ -21,25 +21,38 @@ class Session
       cookie = HTTP::Cookie.new("authentication_token", key)
       cookie.http_only = true
       env.response.cookies["authentication_token"] = cookie
+
+      env.flash[:notice] = "Successfully signed in!"
       env.redirect "/"
+
       return true
     else
+      env.flash[:error] = "Failed to create session, try again."
+      env.redirect "/admin/sign-in"
+
       return false
     end
   end
 
-  def self.destroy_session(cookie) : Bool
+  def self.destroy_session(env, cookie : String)
+    session = Model::Session.find_by(token: cookie)
     valid = false
 
-    session = Model::Session.find_by(token: cookie)
     if session && session.token.not_nil!
       if session.token.not_nil! == cookie
-        session.destroy
+        if session.destroy
+          valid = true
 
-        valid = true unless session
+          env.response.cookies["authentication_token"] = ""
+          env.flash[:notice] = "Successfully signed out!"
+          env.redirect "/"
+        end
       end
     end
 
-    return valid
+    unless valid
+      env.flash[:error] = "Failed to sign out, try again."
+      env.redirect "/admin/sign-in"
+    end
   end
 end

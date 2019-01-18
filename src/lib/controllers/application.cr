@@ -1,5 +1,8 @@
 get "/" do |env|
-  env.redirect "/admin/sign-in" unless authenticated?(env) || allow_dashboard
+  unless authenticated?(env) || allow_dashboard
+    env.flash.keep!
+    env.redirect "/admin/sign-in"
+  end
 
   page_title = "Overview"
   monitors = Monitoring.instance
