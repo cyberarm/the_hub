@@ -9,12 +9,6 @@ get "/admin/monitors/new" do |env|
   page_title = "Add Monitor | Admin"
   monitoring = Monitoring.instance
 
-  hub_message = nil
-  if env.request.cookies["hub_message"]? && env.request.cookies["hub_message"].value.size > 0
-    hub_message = env.request.cookies["hub_message"].value
-    env.response.cookies["hub_message"] = ""
-  end
-
   render "./src/views/admin/monitors/new.slang", "./src/views/admin/admin_layout.slang"
 end
 post "/admin/monitors/new" do |env|
@@ -35,15 +29,11 @@ post "/admin/monitors/new" do |env|
   m = Model::Monitor.create(name: name, type: type, domain: domain, update_interval: update_interval, game: game, key: key)
   if m && m.id != nil
     Monitoring.instance.add_monitor(m)
-    if env.request.cookies["hub_message"]? && env.request.cookies["hub_message"].value.size > 0
-      hub_message = env.request.cookies["hub_message"].value
-      env.response.cookies["hub_message"] = ""
-    end
+
     env.redirect "/admin/monitors/#{m.id}"
   else
-    cookie = HTTP::Cookie.new("hub_message", "#{m.errors.map { |e| e.to_s }.join("<br/>")}")
-    cookie.http_only = true
-    env.response.cookies["hub_message"] = cookie
+    env.flash[:error] = "#{m.errors.map { |e| e.to_s }.join("<br/>")}"
+
     env.redirect "/admin/monitors/new"
   end
 end
@@ -62,12 +52,6 @@ end
 get "/admin/monitors/:monitor/edit" do |env|
   monitor = Model::Monitor.find(env.params.url["monitor"].to_i)
   if monitor
-    hub_message = nil
-    if env.request.cookies["hub_message"]? && env.request.cookies["hub_message"].value.size > 0
-      hub_message = env.request.cookies["hub_message"].value
-      env.response.cookies["hub_message"] = ""
-    end
-
     page_title = "#{monitor.not_nil!.name.not_nil!} | Monitors | Admin"
     render "./src/views/admin/monitors/edit.slang", "./src/views/admin/admin_layout.slang"
   else
@@ -91,10 +75,8 @@ post "/admin/monitors/:monitor/edit" do |env|
       Monitoring.instance.sync_monitor(monitor)
       env.redirect "/admin/monitors/#{monitor.id}"
     else
-      cookie = HTTP::Cookie.new("hub_message", "#{monitor.errors.map { |e| e.to_s }.join("<br/>")}")
-      cookie.http_only = true
-      env.response.cookies["hub_message"] = cookie
-      env.redirect "/admin/monitors/new"
+      env.flash[:error] = "#{monitor.errors.map { |e| e.to_s }.join("<br/>")}"
+      env.redirect "/admin/monitors/#{monitor.id}/edit"
     end
   else
     env.redirect "/admin/monitors"

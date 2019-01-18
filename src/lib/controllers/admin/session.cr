@@ -1,10 +1,5 @@
 get "/admin/sign-in" do |env|
   page_title = "Sign In | Admin"
-  hub_message = nil
-  if env.request.cookies["hub_message"]? && env.request.cookies["hub_message"].value.size > 0
-    hub_message = env.request.cookies["hub_message"].value
-    env.response.cookies["hub_message"] = ""
-  end
 
   render "./src/views/admin/sign_in.slang", "./src/views/admin/admin_layout.slang"
 end
@@ -19,16 +14,12 @@ post "/admin/sign-in" do |env|
     if check_password(user.password.not_nil!, password_from_form)
       Session.create_session(env, user.id.not_nil!, env.request.host.not_nil!)
     else
-      cookie = HTTP::Cookie.new("hub_message", "Username or password was incorrect!")
-      cookie.http_only = true
-      env.response.cookies["hub_message"] = cookie
+      env.flash[:error] = "Username or password was incorrect!"
 
       env.redirect "/admin/sign-in"
     end
   else
-    cookie = HTTP::Cookie.new("hub_message", "Username or password was incorrect!")
-    cookie.http_only = true
-    env.response.cookies["hub_message"] = cookie
+    env.flash[:error] = "Username or password was incorrect!"
 
     env.redirect "/admin/sign-in"
   end

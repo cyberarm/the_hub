@@ -2,8 +2,6 @@ h1.title=monitor.name
 .monitors
   .monitor
     .monitor_label
-      - if hub_message
-        p.error =hub_message
       p=monitor.inspect
     .monitor_content
       form method="post" url="/admin/monitors/#{monitor.id}/edit"

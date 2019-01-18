@@ -34,5 +34,7 @@ html
         .nav_button class="admin"
           p
             a href="/admin/sign-in" Sign In
+    - if env.flash.pending?
+      == render "./src/views/partial/flash.slang"
     .container
       == content

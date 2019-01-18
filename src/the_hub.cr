@@ -23,6 +23,8 @@ require "./lib/config/*"
 require "./lib/monitor"
 require "./lib/monitoring"
 
+require "./lib/flash"
+
 require "./lib/admin/*"
 require "./lib/controllers/*"
 

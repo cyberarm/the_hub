@@ -3,9 +3,7 @@ h1.title Sign In
   .monitor
     .monitor_label
       h2 Sign In
-    .monito_content
-      - if hub_message
-        p.error #{hub_message}
+    .monitor_content
       form method="post" url="/admin/sign-in"
         label for="username" Username
         br

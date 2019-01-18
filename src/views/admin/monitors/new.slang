@@ -2,8 +2,6 @@ h1.title New Monitor
 .monitors
   .monitor
     .monitor_label
-      - if hub_message
-        p.error =hub_message
     .monitor_content
       form method="post" url="/admin/monitors/new"
         label for="name" Name
