@@ -7,6 +7,8 @@ h1.title #{monitor.name}
       - if m
         - m.to_hash.each do |key, value|
           p #{key}: #{value}
+      - if monitor.type == "sensor"
+        p key: #{monitor.key}
       p
         a href="/admin/monitors/#{monitor.id}/edit" Edit
         |/

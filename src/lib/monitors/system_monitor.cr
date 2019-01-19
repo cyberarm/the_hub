@@ -21,6 +21,7 @@ class SystemMonitor < Monitor
   end
 
   def check
+    @has_run = true
     @last_checked_time = Time.monotonic
 
     @net = Hardware::Net.new
