@@ -19,6 +19,7 @@ require "./lib/models/*"
 
 
 require "./lib/config/*"
+require "./lib/dns/*"
 
 require "./lib/monitor"
 require "./lib/monitoring"

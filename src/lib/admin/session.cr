@@ -22,7 +22,7 @@ class Session
       cookie.http_only = true
       env.response.cookies["authentication_token"] = cookie
 
-      env.flash[:notice] = "Successfully signed in!"
+      env.flash[:notice] = "Signed in successfully"
       env.redirect "/"
 
       return true
@@ -44,7 +44,7 @@ class Session
           valid = true
 
           env.response.cookies["authentication_token"] = ""
-          env.flash[:notice] = "Successfully signed out!"
+          env.flash[:notice] = "Signed out successfully"
           env.redirect "/"
         end
       end

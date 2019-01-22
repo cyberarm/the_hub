@@ -13,13 +13,16 @@ class MinecraftMonitor < GameServerMonitor
       port = split.last.to_u32
       @mc_pinger = MCPing::Ping.new(host, port)
     else
-      @mc_pinger = MCPing::Ping.new(@domain)
+      srv = HubDNS::SRV.new("_minecraft._tcp.#{@domain.strip}")
+      @mc_pinger = MCPing::Ping.new(srv.best_record.hostname, srv.best_record.port)
     end
     @mc_ping = nil
   end
 
   def query
     begin
+      srv = HubDNS::SRV.new("_minecraft._tcp.#{@domain.strip}")
+      @mc_pinger = MCPing::Ping.new(srv.best_record.hostname, srv.best_record.port)
       @mc_ping = @mc_pinger.ping
       return true
     rescue ex
