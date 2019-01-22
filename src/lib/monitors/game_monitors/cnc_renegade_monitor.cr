@@ -38,7 +38,6 @@ class CNCRenegadeMonitor < GameServerMonitor
       return false
     end
 
-    puts "Got: #{@packets.join}"
     parse(@packets)
     return true if @packets.size > 0
   end
@@ -73,10 +72,10 @@ class CNCRenegadeMonitor < GameServerMonitor
   end
 
   def full_report
-    if @up
-      if @data
-        "#{report}<br/><br/>#{formatted_players}"
-      end
+    if @up && @data
+      "#{report}<br/><br/>#{formatted_players}"
+    else
+      report
     end
   end
 

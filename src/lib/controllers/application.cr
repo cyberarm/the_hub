@@ -43,9 +43,25 @@ get "/game-servers" do |env|
   page_title = "Game Servers"
   monitors = Monitoring.instance.game_server_monitors
   if is_xhr?(env)
-    render "./src/views/home/game_servers.slang"
+    render "./src/views/game_servers/index.slang"
   else
-    render "./src/views/home/game_servers.slang", "./src/views/application.slang"
+    render "./src/views/game_servers/index.slang", "./src/views/application.slang"
+  end
+end
+
+get "/game-servers/:monitor" do |env|
+  env.redirect "/" unless authenticated?(env) || allow_basic
+
+  db_monitor = Model::Monitor.find(env.params.url["monitor"].to_i)
+  if db_monitor
+    page_title = "#{db_monitor.name} | Game Servers"
+    if is_xhr?(env)
+      render "./src/views/game_servers/show.slang"
+    else
+      render "./src/views/game_servers/show.slang", "./src/views/application.slang"
+    end
+  else
+    halt(env, status_code: 404)
   end
 end
 

@@ -53,7 +53,7 @@ class MinecraftMonitor < GameServerMonitor
         return "Downtime #{formatted_downtime}"
       end
     else
-      return "N/A"
+      return "Unable to query!"
     end
   end
 

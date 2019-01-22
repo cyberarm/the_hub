@@ -14,6 +14,10 @@ class GameServerMonitor < Monitor
   def report
     "N/A"
   end
+
+  def full_report
+    report
+  end
 end
 
 require "./game_monitors/*"
