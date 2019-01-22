@@ -3,6 +3,8 @@ class CNCRenegadeMonitor < GameServerMonitor
     super(name, update_interval, domain)
 
     @data = {} of String => String
+    @players = [] of (Hash(String, String))
+
     @packets = [] of String
 
     @socket = UDPSocket.new
@@ -19,15 +21,13 @@ class CNCRenegadeMonitor < GameServerMonitor
     begin
       @socket.send("\\#{request}\\")
       loop do
-        data, addr = @socket.receive
+        data, addr = @socket.receive(4096) # default of 512 was to small, data was being lost.
         @packets << data
 
         stop_loop = false
-        @packets.each do |packet|
-          if packet.includes?("\\final\\")
-            if @packets.size == query_size(packet)
-              stop_loop = true
-            end
+        if data.includes?("\\final\\")
+          if @packets.size == query_size(data)
+            stop_loop = true
           end
         end
 
@@ -47,7 +47,7 @@ class CNCRenegadeMonitor < GameServerMonitor
     @has_run = true
     @last_checked_time = Time.monotonic
 
-    if retrieve_data("status")
+    if retrieve_data
       @uptime = Time.monotonic unless @up
       @up = true
     else
@@ -72,6 +72,14 @@ class CNCRenegadeMonitor < GameServerMonitor
     end
   end
 
+  def full_report
+    if @up
+      if @data
+        "#{report}<br/><br/>#{formatted_players}"
+      end
+    end
+  end
+
   def mini_status
     if @up && @data
       "#{@data["numplayers"]}/#{@data["maxplayers"]}" if @data.dig?("numplayers") && @data.dig?("maxplayers")
@@ -88,27 +96,63 @@ class CNCRenegadeMonitor < GameServerMonitor
     end
   end
 
+  def formatted_players
+    string = ""
+    @players.each do |player|
+      string = "#{string}<br/><span style=\"color: #{player["team"] == "GDI" ? "orange" : "red"};padding: 10pt\">#{player["player"]}</span></br/>
+      #{player["team"]} score #{player["score"]}<br/>kills #{player["kills"]} deaths #{player["deaths"]}</br>"
+    end
+
+    return string
+  end
+
   def parse(packets : Array(String))
-    parsed_hashes = {} of String => String
-    packets.each do |packet|
-      fields = packet.split("\\")
-      keys = [] of String
-      values = [] of String
+    # Sort packets by queryid
+    packets.sort_by! {|packet| packet.strip.split("\\").last.split(".").last.to_i}
 
-      packet.split("\\")[1..fields.size - 1].each_with_index do |field, i|
-        keys << field if i.even?
-        values << field if i.odd?
-      end
+    hash = {} of String => String
+    key = ""
 
-      keys.each_with_index do |key, i|
-        begin
-          parsed_hashes[key] = values[i]
-        rescue IndexError
-        end
+    packets.join.strip.split("\\").each_with_index do |item, index|
+      next if index == 0
+
+      if index.odd?
+        key = item
+      elsif index.even?
+        hash[key] = item
       end
     end
 
-    @data = parsed_hashes
+    hash.delete("queryid")
+    hash.delete("final")
+
+    players = [] of Hash(String, String)
+    player = {} of String => String
+
+    player_id = 0
+    hash.each do |key, value|
+      next unless key.includes?("_")
+
+      data = key.split("_")
+      hash.delete(key)
+
+      _key = data.first
+      _id  = data.last.to_i
+
+      if _id != player_id
+        players << player
+
+        player = {} of String => String
+        player_id = _id
+      end
+
+      player[_key] = value
+    end
+    players << player
+
+    @data = hash
+    @players.sort_by! {|pl| pl["score"].to_i}
+    @players = players
   end
 
   def query_size(packet)
@@ -119,17 +163,17 @@ class CNCRenegadeMonitor < GameServerMonitor
 
   def to_hash
     orginal_hash = super.to_h
-    hash = {} of String => String
+    hash = {} of String => String | Array(Hash(String, String))
 
     if @up && @data
-      if @data.dig?("numplayers") && @data.dig?("maxplayers")
-        hash["numplayers"] = @data["numplayers"]
-        hash["maxplayers"] = @data["maxplayers"]
+      # Copy hash data into @data hash to prevent needing to add another type to @data
+      # which would mean littering ifs here and there.
+      @data.each do |key, value|
+        hash[key] = value
       end
-
-      hash["mapname"] = @data["mapname"]
       hash["timeleft"] = formatted_timeleft
     end
+    hash["players"] = @players
 
     orginal_hash.merge(hash)
   end
