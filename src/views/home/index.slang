@@ -3,7 +3,7 @@ h1.title Overview
   .overview
     h2 Systems
     .list
-      - if monitors.system_monitors
+      - if monitors.system_monitors.size > 0
         - monitors.system_monitors.each do |monitor|
           - if monitor.up
             p.up
@@ -24,7 +24,7 @@ h1.title Overview
   .overview
     h2 Web Servers
     .list
-      - if monitors.web_server_monitors
+      - if monitors.web_server_monitors.size > 0
         - monitors.web_server_monitors.each do |monitor|
           - if monitor.up
             p.up
@@ -40,7 +40,7 @@ h1.title Overview
   .overview
     h2 Game Servers
     .list
-      - if monitors.game_server_monitors
+      - if monitors.game_server_monitors.size > 0
         - monitors.game_server_monitors.each do |monitor|
           - if monitor.up
             p.up
@@ -56,7 +56,7 @@ h1.title Overview
   .overview
     h2 Sensors/IoT
     .list
-      - if monitors.sensor_iot_monitors
+      - if monitors.sensor_iot_monitors.size > 0
         - monitors.sensor_iot_monitors.each do |monitor|
           - if monitor.up
             p.up

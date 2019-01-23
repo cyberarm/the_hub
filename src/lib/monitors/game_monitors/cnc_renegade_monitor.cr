@@ -99,7 +99,7 @@ class CNCRenegadeMonitor < GameServerMonitor
     string = ""
     @players.each do |player|
       string = "#{string}<br/><span style=\"color: #{player["team"] == "GDI" ? "orange" : "red"};padding: 10pt\">#{player["player"]}</span></br/>
-      #{player["team"]} score #{player["score"]}<br/>kills #{player["kills"]} deaths #{player["deaths"]}</br>"
+      team #{player["team"]} score #{player["score"]}<br/>kills #{player["kills"]} deaths #{player["deaths"]}</br>"
     end
 
     return string
@@ -129,6 +129,8 @@ class CNCRenegadeMonitor < GameServerMonitor
     player = {} of String => String
 
     player_id = 0
+    annoying = false
+    annoying_list = [] of Hash(String, String)
     hash.each do |key, value|
       next unless key.includes?("_")
 
@@ -136,7 +138,12 @@ class CNCRenegadeMonitor < GameServerMonitor
       hash.delete(key)
 
       _key = data.first
-      _id  = data.last.to_i
+      begin
+        _id  = data.last.to_i
+      rescue ArgumentError
+        annoying = true
+        annoying_list << {"#{key}" => value}
+      end
 
       if _id != player_id
         players << player
@@ -147,11 +154,69 @@ class CNCRenegadeMonitor < GameServerMonitor
 
       player[_key] = value
     end
-    players << player
+    players << player unless annoying
+
+    # Response is not standard, thus annoying.
+    if annoying
+      team_id = 0
+      _id = 0
+      teams  = [] of Hash(String, String)
+      player = {} of String => String
+      p annoying_list
+      annoying_list.each do |hash|
+        hash.each do |key, value|
+          _id = key.split("_").last.split("t").last.to_i
+
+          if _id != team_id
+            player["id"] = team_id.to_s
+            teams << player
+            team_id = _id
+
+            player = {} of String => String
+          end
+
+          player[key.split("_").first] = value
+        end
+      end
+      player["id"] = _id.to_s
+      teams << player
+      gdi = "1"
+      nod = "0"
+
+      teams.each do |hash|
+        hash["player"] = hash["team"]
+        if hash["team"] == "GDI"
+          gdi = hash["id"]
+        elsif hash["team"] == "Nod"
+          nod = hash["id"]
+        end
+
+        hash["kills"] = "0"
+        hash["deaths"] = "0"
+      end
+
+      p teams
+      # Repair all player teams
+      players.each do |player|
+        if player["team"] == gdi
+          player["team"] = "GDI"
+          teams[gdi.to_i]["kills"] = (teams[gdi.to_i]["kills"].to_i + player["kills"].to_i).to_s
+          teams[gdi.to_i]["deaths"] = (teams[gdi.to_i]["deaths"].to_i + player["deaths"].to_i).to_s
+        end
+        if player["team"] == nod
+          player["team"] = "Nod"
+          teams[nod.to_i]["kills"] = (teams[nod.to_i]["kills"].to_i + player["kills"].to_i).to_s
+          teams[nod.to_i]["deaths"] = (teams[nod.to_i]["deaths"].to_i + player["deaths"].to_i).to_s
+        end
+      end
+
+      teams.each {|team| players << team}
+    end
 
     @data = hash
-    @players.sort_by! {|pl| pl["score"].to_i}
     @players = players
+    @players.sort_by! {|pl| pl["score"].to_i}
+    @players.reverse!
   end
 
   def query_size(packet)
