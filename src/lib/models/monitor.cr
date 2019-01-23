@@ -3,6 +3,8 @@ class Model
     adapter sqlite
     table_name :monitors
 
+    has_many :reports
+
     field name : String
     field type : String
     field update_interval : Float32

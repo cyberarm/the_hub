@@ -32,6 +32,16 @@ class Monitor
     @update_interval = model.update_interval.not_nil!
   end
 
+  def save_report
+    return unless @up
+
+    report = Model::Report.new(monitor_id: @model_id, payload: self.to_json)
+    if report.save
+    else
+      puts "Failed to save report for #{self.class}"
+    end
+  end
+
   def mini_status
     ""
   end

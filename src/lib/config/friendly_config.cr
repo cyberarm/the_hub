@@ -35,6 +35,7 @@ class FriendlyConfig
     Model::Session.migrator.drop_and_create
     Model::Monitor.migrator.drop_and_create
     Model::ApiKey.migrator.drop_and_create
+    Model::Report.migrator.drop_and_create
   end
 
   def start_config

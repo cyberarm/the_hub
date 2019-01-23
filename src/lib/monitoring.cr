@@ -156,6 +156,7 @@ class Monitoring
           else
             begin
               monitor.check
+              monitor.save_report
             rescue e
               monitor.up = false
               monitor.last_checked_time = Time.monotonic
@@ -166,6 +167,7 @@ class Monitoring
         else
           begin
             monitor.check
+            monitor.save_report
           rescue e
             monitor.up = false
             monitor.has_run = true
