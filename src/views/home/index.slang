@@ -7,8 +7,8 @@ h1.title Overview
         - monitors.system_monitors.each do |monitor|
           - if monitor.up
             p.up
-              span style="status_left" #{monitor.name}
-              span style="status_right" #{monitor.mini_status}
+              span class="status_left" #{monitor.name}
+              span class="status_right" #{monitor.mini_status}
             p CPU: #{monitor.cpu.usage.to_i}%
             p RAM: #{monitor.memory.percent.round}%
             p #{(monitor.memory.used/1000.0/1000.0).round(1)}GiB / #{(monitor.memory.total/1000.0/1000.0).round(1)}GiB
@@ -16,8 +16,8 @@ h1.title Overview
             p UP: #{monitor.formatted_net_upload}
           - else
             p.down
-              span style="status_left" #{monitor.name}
-              span style="status_right" #{monitor.mini_status}
+              span class="status_left" #{monitor.name}
+              span class="status_right" #{monitor.mini_status}
       - else
         p No Monitors
 
@@ -28,12 +28,12 @@ h1.title Overview
         - monitors.web_server_monitors.each do |monitor|
           - if monitor.up
             p.up
-              span style="status_left" #{monitor.name}
-              span style="status_right" #{monitor.mini_status}
+              span class="status_left" #{monitor.name}
+              span class="status_right" #{monitor.mini_status}
           - else
             p.down
-              span style="status_left" #{monitor.name}
-              span style="status_right" #{monitor.mini_status}
+              span class="status_left" #{monitor.name}
+              span class="status_right" #{monitor.mini_status}
       - else
         p No Monitors
 
@@ -44,12 +44,12 @@ h1.title Overview
         - monitors.game_server_monitors.each do |monitor|
           - if monitor.up
             p.up
-              span style="status_left" #{monitor.name}
-              span style="status_right" #{monitor.mini_status}
+              span class="status_left" #{monitor.name}
+              span class="status_right" #{monitor.mini_status}
           - else
             p.down
-              span style="status_left" #{monitor.name}
-              span style="status_right" #{monitor.mini_status}
+              span class="status_left" #{monitor.name}
+              span class="status_right" #{monitor.mini_status}
       - else
         p No Monitors
 
@@ -60,11 +60,11 @@ h1.title Overview
         - monitors.sensor_iot_monitors.each do |monitor|
           - if monitor.up
             p.up
-              span style="status_left" #{monitor.name}
-              span style="status_right" #{monitor.mini_status}
+              span class="status_left" #{monitor.name}
+              span class="status_right" #{monitor.mini_status}
           - else
             p.down
-              span style="status_left" #{monitor.name}
-              span style="status_right" #{monitor.mini_status}
+              span class="status_left" #{monitor.name}
+              span class="status_right" #{monitor.mini_status}
       - else
         p No Monitors
