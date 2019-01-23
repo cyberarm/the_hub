@@ -15,8 +15,9 @@ Supported Monitors:
 0. Have a Linux/Unix system
 1. Install `crystal`
 2. Install `libsass` and `dnsutils`
+3. Run `shards install`
 
-* dnsuntils is required for the `dig` command to be available to HubDNS::SRV.
+* dnsuntils is required for the `dig` command to be available to HubDNS::SRV for Minecraft monitor.
 
 ## Usage
 
