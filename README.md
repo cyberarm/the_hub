@@ -1,5 +1,7 @@
 # The Hub
 
+__Note: The Hub is still in active development and isn't ready for production use__
+
 A dashboard for monitoring the host system, web servers, game servers, and sensors/iot/services.
 
 Supported Monitors:
