@@ -155,7 +155,7 @@ class CNCRenegadeMonitor < GameServerMonitor
 
       player[_key] = value
     end
-    players << player unless annoying
+    players << player unless annoying || player.size == 0
 
     # Response is not standard, thus annoying.
     if annoying
