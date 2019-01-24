@@ -143,6 +143,7 @@ class CNCRenegadeMonitor < GameServerMonitor
       rescue ArgumentError
         annoying = true
         annoying_list << {"#{key}" => value}
+        next
       end
 
       if _id != player_id
@@ -162,7 +163,7 @@ class CNCRenegadeMonitor < GameServerMonitor
       _id = 0
       teams  = [] of Hash(String, String)
       player = {} of String => String
-      p annoying_list
+
       annoying_list.each do |hash|
         hash.each do |key, value|
           _id = key.split("_").last.split("t").last.to_i
@@ -195,7 +196,6 @@ class CNCRenegadeMonitor < GameServerMonitor
         hash["deaths"] = "0"
       end
 
-      p teams
       # Repair all player teams
       players.each do |player|
         if player["team"] == gdi
