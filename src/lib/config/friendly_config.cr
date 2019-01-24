@@ -10,9 +10,9 @@ class FriendlyConfig
   end
 
   def run
-    unless File.exists?("./data/database.db")
-      create_database
-      start_config
+    unless File.exists?("./db/database.db")
+      puts "Please run db migration using: 'crystal bin/micrate up'"
+      exit(1)
     else
       verify_admin_account
     end
@@ -25,17 +25,8 @@ class FriendlyConfig
     end
 
     unless admins
-      create_database
       start_config
     end
-  end
-
-  def create_database
-    Model::User.migrator.drop_and_create
-    Model::Session.migrator.drop_and_create
-    Model::Monitor.migrator.drop_and_create
-    Model::ApiKey.migrator.drop_and_create
-    Model::Report.migrator.drop_and_create
   end
 
   def start_config

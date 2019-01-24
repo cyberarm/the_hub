@@ -6,10 +6,10 @@ class Model
     belongs_to :user
 
     field user_id : Int64
-    field token : String
+    field token   : String
 
     field application_name : String
-    field last_access_ip : String
+    field last_access_ip   : String
 
     validate_not_blank :user_id
     validate_not_blank :token

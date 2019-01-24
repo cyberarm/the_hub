@@ -40,4 +40,16 @@ h1.title=monitor.name
               option value="#{key.to_s}" #{value}
         br
         br
+        label for="save_reports" Save Reports?
+        - if monitor.save_reports
+          input type="checkbox" id="save_reports" name="save_reports" checked="true"
+        - else
+          input type="checkbox" id="save_reports" name="save_reports"
+        br
+        br
+        label for="max_reports" Max number of reports to store (0 for unlimited)
+        br
+        input type="number" id="max_reports" name="max_reports" placeholder="0" value="#{monitor.max_reports}" required="true" min="0"
+        br
+        br
         input.button type="submit" value="Update"

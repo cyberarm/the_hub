@@ -14,7 +14,7 @@ module Hub
 end
 
 require "granite/adapter/sqlite"
-Granite::Adapters << Granite::Adapter::Sqlite.new({name: "sqlite", url: "sqlite3:./data/database.db"})
+Granite::Adapters << Granite::Adapter::Sqlite.new({name: "sqlite", url: "sqlite3:./db/database.db"})
 require "./lib/models/*"
 
 

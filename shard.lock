@@ -32,6 +32,10 @@ shards:
     github: Syfaro/mcping
     commit: 884557d65037bb5451e31ebcd7131da4e6e45367
 
+  micrate:
+    github: amberframework/micrate
+    version: 0.3.3
+
   radix:
     github: luislavena/radix
     version: 0.3.9

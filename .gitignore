@@ -1,5 +1,4 @@
-/data/*.json
-/data/*.db
+*.db
 
 /docs/
 /lib/

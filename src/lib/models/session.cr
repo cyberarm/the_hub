@@ -6,7 +6,7 @@ class Model
     belongs_to :user
 
     field user_id : Int64
-    field token : String
+    field token   : String
 
     field user_ip : String
 

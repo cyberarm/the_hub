@@ -27,6 +27,8 @@ dependencies:
     github: amberframework/granite
   sqlite3:
     github: crystal-lang/crystal-sqlite3
+  micrate:
+    github: amberframework/micrate
 
 crystal: 0.26.1
 

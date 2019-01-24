@@ -18,7 +18,7 @@ h1.title New Monitor
         br
         label for="update_interval" Update Interval (seconds)
         br
-        input type="number" min="1" step="0.01" id="update_interval" name="update_interval" placeholder="1.0" required="true"
+        input type="number" min="1" step="0.1" id="update_interval" name="update_interval" placeholder="1.0" required="true"
         br
         br
         label for="domain" Domain
@@ -32,6 +32,15 @@ h1.title New Monitor
           option value="" selected="true" disabled="true" hidden="true"
           - Monitoring.monitor_game_types.each do |key, value|
               option value="#{key}" #{value}
+        br
+        br
+        label for="save_reports" Save Reports?
+        input type="checkbox" id="save_reports" name="save_reports"
+        br
+        br
+        label for="max_reports" Max number of reports to store (0 for unlimited)
+        br
+        input type="number" id="max_reports" name="max_reports" placeholder="0" required="true" min="0"
         br
         br
         input.button type="submit" value="Add"

@@ -17,6 +17,7 @@ class Monitor
 
     @model_id = 0
     @check_monitor = true
+    @save_reports = false
 
     setup
   end
@@ -30,15 +31,40 @@ class Monitor
   def sync(model : Model::Monitor) # Sync with Database regarding name, domain, ect.
     @name = model.name.not_nil!
     @update_interval = model.update_interval.not_nil!
+    @save_reports = model.save_reports.not_nil!
   end
 
   def save_report
-    return unless @up
+    return unless @save_reports
 
     report = Model::Report.new(monitor_id: @model_id, payload: self.to_json)
     if report.save
     else
-      puts "Failed to save report for #{self.class}"
+      puts "Failed to save report for #{self.class}=>#{@name}"
+    end
+
+    prune_reports
+  end
+
+  # FIXME: This is *VERY* inefficient
+  def prune_reports
+    monitor = Model::Monitor.find(@model_id)
+    if monitor
+      count = monitor.reports_count.not_nil!
+      max_reports = monitor.max_reports.not_nil!
+
+      if count > max_reports
+        reports = Model::Report.order(created_at: :desc).where(monitor_id: @model_id)
+
+        index = 0
+        reports.each do |report|
+          if index > max_reports
+            report.destroy
+          end
+
+          index += 1
+        end
+      end
     end
   end
 

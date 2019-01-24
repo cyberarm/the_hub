@@ -18,6 +18,9 @@ post "/admin/monitors/new" do |env|
   update_interval = env.params.body["update_interval"]?.to_s.to_f
   game = env.params.body["game"]?.to_s
 
+  save_reports = checkbox_boolean(env.params.body["save_reports"]?.to_s)
+  max_reports  = env.params.body["max_reports"]?.to_s.to_i
+
   key = nil
   game = nil unless type == "game"
 
@@ -26,7 +29,7 @@ post "/admin/monitors/new" do |env|
     key = random.urlsafe_base64(32)
   end
 
-  m = Model::Monitor.create(name: name, type: type, domain: domain, update_interval: update_interval, game: game, key: key)
+  m = Model::Monitor.create(name: name, type: type, domain: domain, update_interval: update_interval, game: game, key: key, save_reports: save_reports, max_reports: max_reports)
   if m && m.id != nil
     Monitoring.instance.add_monitor(m)
 
@@ -69,10 +72,13 @@ post "/admin/monitors/:monitor/edit" do |env|
     update_interval = env.params.body["update_interval"]?.to_s.to_f
     game = env.params.body["game"]?.to_s
 
+    save_reports = checkbox_boolean(env.params.body["save_reports"]?.to_s)
+    max_reports  = env.params.body["max_reports"]?.to_s.to_i
+
     key = nil
     game = nil unless type == "game"
 
-    if monitor.update(name: name, type: type, domain: domain, update_interval: update_interval, game: game, key: key)
+    if monitor.update(name: name, type: type, domain: domain, update_interval: update_interval, game: game, key: key, save_reports: save_reports, max_reports: max_reports)
       Monitoring.instance.sync_monitor(monitor)
 
       env.flash[:notice] = "monitor was successfully updated"

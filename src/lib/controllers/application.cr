@@ -1,3 +1,7 @@
+error 404 do
+  "<h1 style='text-align: center'>Page Not Found</h1>"
+end
+
 get "/" do |env|
   unless authenticated?(env) || allow_dashboard
     env.flash.keep!
@@ -83,6 +87,26 @@ end
 
 def is_xhr?(env)
   env.request.headers["X-XHR"]? == "xmlhttprequest"
+end
+
+# HTML Checkboxes are hard, this makes it easier
+def checkbox_boolean(checkbox_string)
+  boolean = false
+
+  case checkbox_string.to_s
+  when "on"
+    boolean = true
+  when "off"
+    boolean = false
+  when "1"
+    boolean = true
+  when "0"
+    boolean = false
+  when "nil"
+    boolean = false
+  end
+
+  return boolean
 end
 
 # Does the visitor have a valid session cookie?

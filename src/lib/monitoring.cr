@@ -126,6 +126,7 @@ class Monitoring
 
     if m
       m.model_id = monitor.id.not_nil!
+      m.sync(monitor)
       @monitors.push(m)
 
       run(m)
