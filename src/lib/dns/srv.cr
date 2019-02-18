@@ -18,6 +18,7 @@ class HubDNS
       @request = @request.strip
 
       reject! if @request.includes?(";")
+      reject! if @request.includes?("&")
       reject! unless @request.starts_with?("_")
       reject! if @request.split(" ").size > 1
       reject! unless @request.includes?(".")
