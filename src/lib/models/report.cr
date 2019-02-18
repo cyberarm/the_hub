@@ -1,5 +1,7 @@
 class Model
   class Report < Granite::Base
+    INFINITE_REPORTS = 0
+
     adapter sqlite
     table_name :reports
 

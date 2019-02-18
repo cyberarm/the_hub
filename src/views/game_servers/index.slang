@@ -12,3 +12,5 @@ h1.title Game Servers
       .monitor_content
         p
           == monitor.report
+  - unless monitors.size > 0
+    h2.title No Monitors

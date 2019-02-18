@@ -53,6 +53,8 @@ class Monitor
       count = monitor.reports_count.not_nil!
       max_reports = monitor.max_reports.not_nil!
 
+      return if max_reports == Model::Report::INFINITE_REPORTS # Don't delete reports when told to preserve them all
+
       if count > max_reports
         reports = Model::Report.order(created_at: :desc).where(monitor_id: @model_id)
 

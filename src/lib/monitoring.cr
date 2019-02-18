@@ -1,20 +1,4 @@
 class Monitoring
-  # class MonitorStruct
-  #   JSON.mapping(
-  #     name: String,
-  #     type: String,
-  #     update_interval: Float32?,
-  #     domain: String?,
-  #     game: String?,
-  #     key: String?
-  #   )
-  # end
-
-  @@singleton = new.as(self)
-
-  def self.instance : Monitoring
-    @@singleton
-  end
 
   property :check_monitors
   getter :monitors, :monitor_types, :monitor_game_types
@@ -40,7 +24,12 @@ class Monitoring
     }
   end
 
-  def initialize
+  @@instance = new.as(self)
+  def self.instance : Monitoring
+    @@instance
+  end
+
+  private def initialize
     # All monitors for looping through
     @monitors = [] of Monitor
 
@@ -183,11 +172,11 @@ class Monitoring
     end
   end
 
-  def get_monitor(model_id)
-    Monitoring.instance.monitors.find { |m| m.model_id == model_id }
+  def get_monitor(model_id : Int64)
+    monitors.find { |m| m.model_id == model_id }
   end
 
-  def get_monitor_object(monitor)
-    Monitoring.instance.monitors.find { |m| m == monitor }
+  def get_monitor_object(monitor : Monitor)
+    monitors.find { |m| m == monitor }
   end
 end
