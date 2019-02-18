@@ -1,0 +1,11 @@
+#! /usr/bin/env crystal
+
+# Require your database's adapter
+# require "pg"
+# require "mysql"
+require "sqlite3"
+
+require "micrate"
+
+Micrate::DB.connection_url = "sqlite3:./db/database.db"
+Micrate::Cli.run

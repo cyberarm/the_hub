@@ -11,7 +11,7 @@ class FriendlyConfig
 
   def run
     unless File.exists?("./db/database.db")
-      puts "Please run db migration using: 'crystal bin/micrate up'"
+      puts "Please run db migration using: 'crystal src/bin/micrate up'"
       exit(1)
     else
       verify_admin_account
