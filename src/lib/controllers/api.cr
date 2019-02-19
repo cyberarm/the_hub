@@ -24,6 +24,21 @@ get "/api/systems" do |env|
   Monitoring.instance.system_monitors.each { |m| list << m.to_json }
   "[#{list.join(",")}]"
 end
+get "/api/systems/:id" do |env|
+  env.response.content_type = "application/json"
+
+  id = env.params.url["id"].to_i64
+  if id
+    monitor = Monitoring.instance.get_monitor(id)
+    if monitor && monitor.is_a?(SystemMonitor)
+      monitor.to_json
+    else
+      halt(env, status_code: 404)
+    end
+  else
+    halt(env, status_code: 404)
+  end
+end
 
 get "/api/web-servers" do |env|
   env.response.content_type = "application/json"
@@ -31,6 +46,21 @@ get "/api/web-servers" do |env|
   list = [] of String
   Monitoring.instance.web_server_monitors.each { |m| list << m.to_json }
   "[#{list.join(",")}]"
+end
+get "/api/web-servers/:id" do |env|
+  env.response.content_type = "application/json"
+
+  id = env.params.url["id"].to_i64
+  if id
+    monitor = Monitoring.instance.get_monitor(id)
+    if monitor && monitor.is_a?(WebServerMonitor)
+      monitor.to_json
+    else
+      halt(env, status_code: 404)
+    end
+  else
+    halt(env, status_code: 404)
+  end
 end
 
 get "/api/game-servers" do |env|
@@ -62,6 +92,21 @@ get "/api/sensors" do |env|
   list = [] of String
   Monitoring.instance.sensor_iot_monitors.each { |m| list << m.to_json }
   "[#{list.join(",")}]"
+end
+get "/api/sensors/:id" do |env|
+  env.response.content_type = "application/json"
+
+  id = env.params.url["id"].to_i64
+  if id
+    monitor = Monitoring.instance.get_monitor(id)
+    if monitor && monitor.is_a?(SensorIoTMonitor)
+      monitor.to_json
+    else
+      halt(env, status_code: 404)
+    end
+  else
+    halt(env, status_code: 404)
+  end
 end
 
 post "/api/sensors/update" do |env|
