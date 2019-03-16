@@ -82,7 +82,7 @@ get "/sensors" do |env|
 end
 
 get "/css/application.css" do |env|
-  Sass.compile_file "./src/views/application.sass"
+  Hub::STYLESHEET
 end
 
 def is_xhr?(env)

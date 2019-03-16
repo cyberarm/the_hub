@@ -11,6 +11,7 @@ require "mcping"
 
 module Hub
   VERSION = "0.1.0"
+  STYLESHEET = Sass.compile_file "./src/views/application.sass"
 end
 
 require "granite/adapter/sqlite"

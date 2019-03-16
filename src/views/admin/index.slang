@@ -10,10 +10,10 @@ h1.title class="admin" Administration
           - monitor = get_monitor(db_monitor.id)
           - next unless monitor
           -if monitor.up
-            p.up
+            p.up.monitor_status_link
               a href="/admin/monitors/#{db_monitor.id}" #{monitor.name}
           - else
-            p.down
+            p.down.monitor_status_link
               a href="/admin/monitors/#{db_monitor.id}" #{monitor.name}
   .monitor
     .monitor_label
