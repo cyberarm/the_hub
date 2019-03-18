@@ -50,6 +50,27 @@ class MinetestMonitor < GameServerMonitor
     end
   end
 
+  def sync(monitor : Model::Monitor)
+    super
+    @socket.close
+
+    while(!@socket.closed?)
+    end
+
+    @socket = UDPSocket.new
+    @socket.read_timeout = 5
+
+    split = @domain.split(":")
+    if split.size > 1
+      host = split.first
+      port = split.last.to_u32
+
+      @socket.connect(host, port)
+    else
+      @socket.connect(@domain, 30000)
+    end
+  end
+
   def report
     if @up
       "Uptime #{formatted_uptime}<br/>Probaby Online"

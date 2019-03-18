@@ -7,7 +7,8 @@ h1.title Overview
         - monitors.system_monitors.each do |monitor|
           - if monitor.up
             p.up
-              span class="status_left" #{monitor.name}
+              span class="status_left monitor_status_link"
+                a href="/systems/#{monitor.model_id}" #{monitor.name}
               span class="status_right" #{monitor.mini_status}
             p CPU: #{monitor.cpu.usage.to_i}%
             p RAM: #{monitor.memory.percent.round}%
@@ -16,7 +17,8 @@ h1.title Overview
             p UP: #{monitor.formatted_net_upload}
           - else
             p.down
-              span class="status_left" #{monitor.name}
+              span class="status_left monitor_status_link"
+                a href="/systems/#{monitor.model_id}" #{monitor.name}
               span class="status_right" #{monitor.mini_status}
       - else
         p No Monitors
@@ -28,11 +30,13 @@ h1.title Overview
         - monitors.web_server_monitors.each do |monitor|
           - if monitor.up
             p.up
-              span class="status_left" #{monitor.name}
+              span class="status_left monitor_status_link"
+                a href="/web-servers/#{monitor.model_id}" #{monitor.name}
               span class="status_right" #{monitor.mini_status}
           - else
             p.down
-              span class="status_left" #{monitor.name}
+              span class="status_left monitor_status_link"
+                a href="/web-servers/#{monitor.model_id}" #{monitor.name}
               span class="status_right" #{monitor.mini_status}
       - else
         p No Monitors
@@ -44,11 +48,13 @@ h1.title Overview
         - monitors.game_server_monitors.each do |monitor|
           - if monitor.up
             p.up
-              span class="status_left" #{monitor.name}
+              span class="status_left monitor_status_link"
+                a href="/game-servers/#{monitor.model_id}" #{monitor.name}
               span class="status_right" #{monitor.mini_status}
           - else
             p.down
-              span class="status_left" #{monitor.name}
+              span class="status_left monitor_status_link"
+                a href="/game-servers/#{monitor.model_id}" #{monitor.name}
               span class="status_right" #{monitor.mini_status}
       - else
         p No Monitors
@@ -60,11 +66,13 @@ h1.title Overview
         - monitors.sensor_iot_monitors.each do |monitor|
           - if monitor.up
             p.up
-              span class="status_left" #{monitor.name}
+              span class="status_left monitor_status_link"
+                a href="/sensors/#{monitor.model_id}" #{monitor.name}
               span class="status_right" #{monitor.mini_status}
           - else
             p.down
-              span class="status_left" #{monitor.name}
+              span class="status_left monitor_status_link"
+                a href="/sensors/#{monitor.model_id}" #{monitor.name}
               span class="status_right" #{monitor.mini_status}
       - else
         p No Monitors

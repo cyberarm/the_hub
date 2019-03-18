@@ -5,8 +5,6 @@ class CNCRenegadeMonitor < GameServerMonitor
     @data = {} of String => String
     @players = [] of (Hash(String, String))
 
-    @packets = [] of String
-
     @socket = UDPSocket.new
     @socket.read_timeout = 5
     addr = @domain.split(":")
@@ -15,18 +13,18 @@ class CNCRenegadeMonitor < GameServerMonitor
 
   def retrieve_data(request = "status")
     puts "request: #{request}"
-    @packets.clear
+    packets = [] of String
 
     start_time = Time.monotonic
     begin
       @socket.send("\\#{request}\\")
       loop do
         data, addr = @socket.receive(4096) # default of 512 was to small, data was being lost.
-        @packets << data
+        packets << data
 
         stop_loop = false
         if data.includes?("\\final\\")
-          if @packets.size == query_size(data)
+          if packets.size == query_size(data)
             stop_loop = true
           end
         end
@@ -38,8 +36,8 @@ class CNCRenegadeMonitor < GameServerMonitor
       return false
     end
 
-    parse(@packets)
-    return true if @packets.size > 0
+    parse(packets)
+    return true if packets.size > 0
   end
 
   def check
@@ -53,6 +51,19 @@ class CNCRenegadeMonitor < GameServerMonitor
       @downtime = Time.monotonic if @up
       @up = false
     end
+  end
+
+  def sync(model : Model::Monitor)
+    super
+    @socket.close
+
+    while(!@socket.closed?)
+    end
+
+    @socket = UDPSocket.new
+    @socket.read_timeout = 5
+    addr = @domain.split(":")
+    @socket.connect("#{addr[0]}", addr[1].to_i)
   end
 
   def report
