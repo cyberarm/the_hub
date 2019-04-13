@@ -26,8 +26,11 @@ require "./lib/monitor"
 require "./lib/monitoring"
 
 require "./lib/flash"
+require "./lib/background_task"
 
 require "./lib/admin/*"
 require "./lib/controllers/*"
+
+require "./lib/background_tasks/*"
 
 Kemal.run
