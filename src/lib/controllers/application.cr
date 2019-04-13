@@ -111,7 +111,10 @@ end
 
 # Does the visitor have a valid session cookie?
 def authenticated?(env)
-  if env.request.cookies["authentication_token"]? && Session.valid_session?(env.request.cookies["authentication_token"].value)
+  if env.request.cookies["authentication_token"]? && Session.valid_session?(env.request.cookies["authentication_token"].value, true)
+    cookie = env.request.cookies["authentication_token"]
+    cookie.expires = Time.new.to_utc + FriendlyConfig::EXPIRE_SESSION_AFTER # n hours in future
+    env.response.cookies["authentication_token"] = cookie
     return true
   else
     return false
@@ -132,12 +135,17 @@ end
 
 # Return Model::User object or Nil if no user was found
 def current_user(env)
-  cookie = env.request.cookies["authentication_token"].value
-  session = Model::Session.find_by(token: cookie)
+  cookie = env.request.cookies["authentication_token"]?
 
-  begin
-    return Model::User.find(session.not_nil!.user_id).not_nil!
-  rescue
+  if cookie
+    session = Model::Session.find_by(token: cookie.value)
+
+    begin
+      return Model::User.find(session.not_nil!.user_id).not_nil!
+    rescue
+      return nil
+    end
+  else
     return nil
   end
 end

@@ -1,4 +1,6 @@
 class FriendlyConfig
+  EXPIRE_SESSION_AFTER = Time::Span.new(12, 0, 0) # HOURS, MINUTES, SECONDS
+
   @username : String
   @email : String
   @password : String
