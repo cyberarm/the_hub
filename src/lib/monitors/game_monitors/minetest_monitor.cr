@@ -1,79 +1,103 @@
 class MinetestMonitor < GameServerMonitor
-  def initialize(name : String, update_interval : Float32, domain : String)
-    super(name, update_interval, domain)
-    @socket = UDPSocket.new
-    split = @domain.split(":")
-    if split.size > 1
-      host = split.first
-      port = split.last.to_u32
+  class MinetestServerList
+    @@server_list : MinetestServerList?
 
-      @socket.connect(host, port)
-    else
-      @socket.connect(@domain, 30000)
+    def self.server_list
+      @@server_list
     end
-    @socket.read_timeout = 5
+
+    def self.server_list=(list : MinetestServerList)
+      @@server_list = list
+    end
+
+    getter :data
+
+    def initialize(@url : String = "https://servers.minetest.net/list")
+      MinetestServerList.server_list = self
+
+      BackgroundTask.new(100.seconds).run do |task|
+        begin
+          response = Halite.get(@url)
+          @data = JSON.parse(response.body)
+        rescue Halite::Exception::ConnectionError | Halite::Exception::TimeoutError
+          # pp error
+        end
+      end
+    end
   end
 
-  def received_response
-    # Minetest Protocol 37~
-    hello_packet = Slice[0x4f_u8, 0x45_u8, 0x74_u8, 0x03_u8, 0x00_u8, 0x00_u8, 0x00_u8, 0x03_u8, 0xff_u8, 0xdc_u8, 0x01_u8, 0x00_u8, 0x00_u8]
+  @server : JSON::Any?
+  def initialize(name : String, update_interval : Float32, domain : String)
+    super(name, update_interval, domain)
 
-    @socket.write(hello_packet)
-
-    begin
-      slice = Bytes.new(16)
-      responses = 0
-      @socket.read(slice)
-      loop do
-        @socket.read(slice)
-        responses += 1
-        break if responses >= 8
-      end
-      return true
-    rescue IO::Timeout
-      return false
-    end
-
-    return false
+    MinetestServerList.new unless MinetestServerList.server_list
   end
 
   def check
     @has_run = true
     @last_checked_time = Time.monotonic
+    server = nil
 
-    if received_response
-      @uptime = Time.monotonic unless @up
-      @up = true
-    else
-      @downtime = Time.monotonic if @up
-      @up = false
+    if MinetestServerList.server_list && MinetestServerList.server_list.not_nil!.data
+      data = MinetestServerList.server_list.not_nil!.data.not_nil!["list"].as_a
+      split = @domain.split(":")
+      if split.size > 1
+        host = split.first
+        port = split.last.to_u32
+
+        server = data.find { |server| server["address"] == host && server["port"] == port }
+      else
+        server = data.find { |server| server["address"] == @domain }
+      end
+
+      if server
+        @server = server
+        @uptime = Time.monotonic unless @up
+        @up = true
+      else
+        @server = nil
+        @downtime = Time.monotonic if @up
+        @up = false
+      end
     end
   end
 
   def sync(monitor : Model::Monitor)
     super
-    @socket.close
-
-    while(!@socket.closed?)
-    end
-
-    @socket = UDPSocket.new
-    @socket.read_timeout = 5
-
-    split = @domain.split(":")
-    if split.size > 1
-      host = split.first
-      port = split.last.to_u32
-
-      @socket.connect(host, port)
-    else
-      @socket.connect(@domain, 30000)
-    end
   end
 
   def report
+    string = ""
+
     if @up
-      "Uptime #{formatted_uptime}<br/>Probaby Online"
+      if @server
+        server = @server.not_nil!
+
+        string += "Uptime #{formatted_uptime}<br/>"
+        string += "#{server["description"]}<br/><br/>"
+        string += "Players #{server["clients"]}/#{server["clients_max"]}"
+
+        if server["clients"].as_i > 0
+          string += "<br/>"
+          server["clients_list"].as_a.each do |client|
+            string += "#{client}<br/>"
+          end
+        end
+      end
+
+      string
+    else
+      "Offline"
+    end
+  end
+
+  def mini_status
+    if @up
+      if @server
+        server = @server.not_nil!
+
+        "#{server["clients"]}/#{server["clients_max"]}"
+      end
     else
       "Downtime #{formatted_downtime}"
     end
