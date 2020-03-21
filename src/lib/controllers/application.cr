@@ -113,7 +113,7 @@ end
 def authenticated?(env)
   if env.request.cookies["authentication_token"]? && Session.valid_session?(env.request.cookies["authentication_token"].value, true)
     cookie = env.request.cookies["authentication_token"]
-    cookie.expires = Time.new.to_utc + FriendlyConfig::EXPIRE_SESSION_AFTER # n hours in future
+    cookie.expires = Time.utc + FriendlyConfig::EXPIRE_SESSION_AFTER # n hours in future
     env.response.cookies["authentication_token"] = cookie
     return true
   else

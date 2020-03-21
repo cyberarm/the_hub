@@ -34,7 +34,7 @@ def bcrypt_password(password)
 end
 
 def check_password(password_hash : String | Nil, password_from_form : String)
-  if Crypto::Bcrypt::Password.new(password_hash) == password_from_form
+  if Crypto::Bcrypt::Password.new(password_hash).verify(password_from_form)
     return true
   else
     return false

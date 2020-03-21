@@ -1,14 +1,15 @@
 class Model
   class Session < Granite::Base
-    adapter sqlite
-    table_name :sessions
+    connection sqlite
+    table sessions
 
     belongs_to :user
 
-    field user_id : Int64
-    field token   : String
+    column id : Int64, primary: true
+    column user_id : Int64
+    column token   : String
 
-    field user_ip : String
+    column user_ip : String
 
     validate_not_blank :user_id
     validate_not_blank :token

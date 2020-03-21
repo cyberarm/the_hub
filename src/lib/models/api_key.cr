@@ -1,15 +1,16 @@
 class Model
   class ApiKey < Granite::Base
-    adapter sqlite
-    table_name :api_keys
+    connection sqlite
+    table api_keys
 
     belongs_to :user
 
-    field user_id : Int64
-    field token   : String
+    column id : Int64, primary: true
+    column user_id : Int64
+    column token   : String
 
-    field application_name : String
-    field last_access_ip   : String
+    column application_name : String
+    column last_access_ip   : String = ""
 
     validate_not_blank :user_id
     validate_not_blank :token

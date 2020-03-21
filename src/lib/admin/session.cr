@@ -5,7 +5,7 @@ class Session
     session = Model::Session.find_by(token: cookie)
     if session && session.token.not_nil!
       if session.token.not_nil! == cookie
-        session.update(updated_at: Time.new.to_utc) if update_session
+        session.update(updated_at: Time.utc) if update_session
         valid = true
       end
     end
@@ -19,7 +19,7 @@ class Session
     session = Model::Session.create(user_id: user_id, token: key, user_ip: user_ip)
 
     if session && session.token.not_nil!
-      expires_at = Time.new.to_utc + FriendlyConfig::EXPIRE_SESSION_AFTER
+      expires_at = Time.utc + FriendlyConfig::EXPIRE_SESSION_AFTER
       cookie = HTTP::Cookie.new("authentication_token", key)
       cookie.expires = expires_at
       cookie.http_only = true

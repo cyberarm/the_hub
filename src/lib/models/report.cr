@@ -2,13 +2,14 @@ class Model
   class Report < Granite::Base
     INFINITE_REPORTS = 0
 
-    adapter sqlite
-    table_name :reports
+    connection sqlite
+    table reports
 
     belongs_to :monitor
 
-    field monitor_id : Int64
-    field payload : String
+    column id : Int64, primary: true
+    column monitor_id : Int64
+    column payload : String
 
 
     validate_not_blank :monitor_id

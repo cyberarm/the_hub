@@ -62,7 +62,9 @@ class FriendlyConfig
   end
 
   def save_config
-    Model::User.create(username: @username, email: @email, password: @password, role: Model::User::ROLE_ADMIN)
+    puts "CALLED"
+    model = Model::User.create(username: @username, email: @email, password: @password, role: Model::User::ROLE_ADMIN)
+    pp model
   end
 
   def create_bcrypt_password(string)

@@ -1,19 +1,20 @@
 class Model
   class User < Granite::Base
-    adapter sqlite
-    table_name :users
+    connection sqlite
+    table users
 
     has_many :sessions
     has_many :api_keys
 
-    field username : String
-    field email : String
-    field password : String
+    column id : Int64, primary: true
+    column username : String
+    column email : String
+    column password : String
 
-    field role : Int32
+    column role : Int32
 
-    field last_login_at : Time
-    field last_login_ip : String
+    column last_login_at : Time = Time.utc
+    column last_login_ip : String = ""
 
     validate_not_blank :username
     validate_not_blank :email

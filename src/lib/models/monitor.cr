@@ -1,23 +1,24 @@
 class Model
   class Monitor < Granite::Base
-    adapter sqlite
-    table_name :monitors
+    connection sqlite
+    table monitors
 
     has_many :reports
 
-    field name            : String
-    field type            : String
-    field update_interval : Float32
-    field domain          : String
-    field game            : String
-    field key             : String
+    column id : Int64, primary: true
+    column name            : String
+    column type            : String
+    column update_interval : Float32
+    column domain          : String?
+    column game            : String?
+    column key             : String?
 
-    field save_reports : Bool
-    field max_reports  : Int32
+    column save_reports : Bool = false
+    column max_reports  : Int32 = 0
 
-    field reports_count : Int32
+    column reports_count : Int32 = 0
 
-    field last_error : String
+    column last_error : String = ""
 
     validate_not_blank :name
     validate_not_blank :type

@@ -15,7 +15,7 @@ post "/admin/monitors/new" do |env|
   name = env.params.body["name"]?.to_s
   type = env.params.body["type"]?.to_s
   domain = env.params.body["domain"]?.to_s
-  update_interval = env.params.body["update_interval"]?.to_s.to_f
+  update_interval = env.params.body["update_interval"]?.to_s.to_f32
   game = env.params.body["game"]?.to_s
 
   save_reports = checkbox_boolean(env.params.body["save_reports"]?.to_s)
