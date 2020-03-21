@@ -7,7 +7,7 @@ h1.title Systems
         p CPU Monitor
       .monitor_content
         data data-monitor="cpu_monitor" data-type="arc_progressbar"
-        h1 #{monitor.cpu.usage.to_i}%
+        h1 #{monitor.cpu.usage!.to_i}%
 
     .monitor
       .monitor_label
