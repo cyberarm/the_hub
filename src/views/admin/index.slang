@@ -23,3 +23,12 @@ h1.title class="admin" Administration
       - if accounts
         - accounts.each do |account|
           p #{account.role_name} #{account.username}
+  .monitor
+    .monitor_label
+      h2
+        a href="/admin/api_keys" API Keys
+    .monitor_content
+      - if api_keys
+        - api_keys.each do |api_key|
+          p
+            a href="/admin/api_keys/#{api_key.id}" #{api_key.application_name}

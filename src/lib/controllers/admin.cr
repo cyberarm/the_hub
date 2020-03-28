@@ -20,6 +20,7 @@ get "/admin" do |env|
   page_title = "Admin"
   monitors = Model::Monitor.all
   accounts = Model::User.all
+  api_keys = Model::ApiKey.all
   render "./src/views/admin/index.slang", "./src/views/admin/admin_layout.slang"
 end
 

@@ -16,6 +16,9 @@ html
         .nav_button class="admin"
           p
             a href="/admin/accounts" Accounts
+        .nav_button class="admin"
+          p
+            a href="/admin/api_keys" API Keys
         .nav_button
           p
             a href="/" Return to Hub
